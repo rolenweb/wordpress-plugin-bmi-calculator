@@ -90,12 +90,10 @@ class SBC_Assets {
 			array(
 				'i18n' => array(
 					'errorMessage' => esc_html__( 'Please enter valid height and weight values.', 'simple-bmi-calculator' ),
-					'metricUnits'  => esc_html__( 'Metric units', 'simple-bmi-calculator' ),
-					'imperialUnits'=> esc_html__( 'Imperial units', 'simple-bmi-calculator' ),
 					'underweight' => esc_html__( 'Underweight', 'simple-bmi-calculator' ),
-					'normal'      => esc_html__( 'Normal weight', 'simple-bmi-calculator' ),
+					'healthy'     => esc_html__( 'Healthy', 'simple-bmi-calculator' ),
 					'overweight'  => esc_html__( 'Overweight', 'simple-bmi-calculator' ),
-					'obesity'     => esc_html__( 'Obesity', 'simple-bmi-calculator' ),
+					'obese'       => esc_html__( 'Obese', 'simple-bmi-calculator' ),
 				),
 			)
 		);

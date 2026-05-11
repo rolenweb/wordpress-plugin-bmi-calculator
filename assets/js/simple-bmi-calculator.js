@@ -4,22 +4,6 @@
 	var config = window.sbcCalculatorData || {};
 	var i18n = config.i18n || {};
 
-	function getCategory( bmi ) {
-		if ( bmi < 18.5 ) {
-			return i18n.underweight || 'Underweight';
-		}
-
-		if ( bmi < 25 ) {
-			return i18n.normal || 'Normal weight';
-		}
-
-		if ( bmi < 30 ) {
-			return i18n.overweight || 'Overweight';
-		}
-
-		return i18n.obesity || 'Obesity';
-	}
-
 	function parseNumber( value ) {
 		var parsed = parseFloat( value );
 
@@ -30,49 +14,36 @@
 		return calculator.getAttribute( 'data-current-unit' ) || calculator.getAttribute( 'data-default-unit' ) || 'metric';
 	}
 
-	function clearFeedback( calculator ) {
-		setError( calculator, '' );
-		setResult( calculator, '-', '-' );
-	}
-
-	function setActiveUnit( calculator, unit ) {
-		var metricFields = calculator.querySelector( '.sbc-fields--metric' );
-		var imperialFields = calculator.querySelector( '.sbc-fields--imperial' );
-		var toggles = calculator.querySelectorAll( '.sbc-unit-toggle__button' );
-		var unitTag = calculator.querySelector( '.sbc-calculator__unit-tag' );
-
-		calculator.setAttribute( 'data-current-unit', unit );
-		calculator.classList.toggle( 'sbc-unit-metric', unit === 'metric' );
-		calculator.classList.toggle( 'sbc-unit-imperial', unit === 'imperial' );
-
-		if ( metricFields && imperialFields ) {
-			metricFields.hidden = unit !== 'metric';
-			imperialFields.hidden = unit !== 'imperial';
-			metricFields.setAttribute( 'aria-hidden', unit === 'metric' ? 'false' : 'true' );
-			imperialFields.setAttribute( 'aria-hidden', unit === 'imperial' ? 'false' : 'true' );
-			toggleGroupInputs( metricFields, unit === 'metric' );
-			toggleGroupInputs( imperialFields, unit === 'imperial' );
+	function getCategoryData( bmi ) {
+		if ( bmi < 18.5 ) {
+			return {
+				label: i18n.underweight || 'Underweight',
+				numberClass: 'sbc-result__number--underweight',
+				badgeClass: 'sbc-result__badge--underweight',
+			};
 		}
 
-		if ( unitTag ) {
-			unitTag.textContent = unit === 'imperial'
-				? ( i18n.imperialUnits || 'Imperial units' )
-				: ( i18n.metricUnits || 'Metric units' );
+		if ( bmi < 25 ) {
+			return {
+				label: i18n.healthy || 'Healthy',
+				numberClass: 'sbc-result__number--healthy',
+				badgeClass: 'sbc-result__badge--healthy',
+			};
 		}
 
-		toggles.forEach( function ( toggle ) {
-			var isActive = toggle.getAttribute( 'data-unit' ) === unit;
+		if ( bmi < 30 ) {
+			return {
+				label: i18n.overweight || 'Overweight',
+				numberClass: 'sbc-result__number--overweight',
+				badgeClass: 'sbc-result__badge--overweight',
+			};
+		}
 
-			toggle.classList.toggle( 'sbc-unit-toggle__button--active', isActive );
-			toggle.setAttribute( 'aria-pressed', isActive ? 'true' : 'false' );
-			toggle.tabIndex = isActive ? 0 : -1;
-		} );
-	}
-
-	function toggleGroupInputs( group, isActive ) {
-		group.querySelectorAll( 'input' ).forEach( function ( input ) {
-			input.disabled = ! isActive;
-		} );
+		return {
+			label: i18n.obese || 'Obese',
+			numberClass: 'sbc-result__number--obese',
+			badgeClass: 'sbc-result__badge--obese',
+		};
 	}
 
 	function setError( calculator, message ) {
@@ -86,69 +57,129 @@
 		errorNode.hidden = ! message;
 	}
 
-	function setResult( calculator, bmi, category ) {
+	function resetResult( calculator ) {
+		var result = calculator.querySelector( '.sbc-result' );
 		var resultNumber = calculator.querySelector( '.sbc-result__number' );
-		var resultCategory = calculator.querySelector( '.sbc-result__category-text' );
+		var resultBadge = calculator.querySelector( '.sbc-result__badge' );
+
+		if ( result ) {
+			result.hidden = true;
+		}
 
 		if ( resultNumber ) {
-			resultNumber.textContent = bmi;
+			resultNumber.textContent = '0.0';
+			resultNumber.className = 'sbc-result__number';
 		}
 
-		if ( resultCategory ) {
-			resultCategory.textContent = category;
+		if ( resultBadge ) {
+			resultBadge.textContent = i18n.healthy || 'Healthy';
+			resultBadge.className = 'sbc-result__badge';
 		}
 	}
 
-	function calculateMetric( calculator ) {
-		var height = parseNumber( calculator.querySelector( '[id$="-height-cm"]' ).value );
-		var weight = parseNumber( calculator.querySelector( '[id$="-weight-kg"]' ).value );
+	function updateLabels( calculator, unit ) {
+		calculator.querySelectorAll( '.sbc-field__label' ).forEach( function ( label ) {
+			var metricLabel = label.getAttribute( 'data-label-metric' );
+			var imperialLabel = label.getAttribute( 'data-label-imperial' );
 
-		if ( ! height || ! weight || height <= 0 || weight <= 0 ) {
-			return null;
-		}
-
-		var heightMeters = height / 100;
-
-		return weight / ( heightMeters * heightMeters );
+			label.textContent = unit === 'imperial' ? imperialLabel : metricLabel;
+		} );
 	}
 
-	function calculateImperial( calculator ) {
-		var feet = parseNumber( calculator.querySelector( '[id$="-height-ft"]' ).value );
-		var inches = parseNumber( calculator.querySelector( '[id$="-height-in"]' ).value );
-		var weight = parseNumber( calculator.querySelector( '[id$="-weight-lb"]' ).value );
+	function setActiveUnit( calculator, unit ) {
+		var toggles = calculator.querySelectorAll( '.sbc-unit-toggle__button' );
 
-		if ( feet === null ) {
-			feet = 0;
+		calculator.setAttribute( 'data-current-unit', unit );
+		updateLabels( calculator, unit );
+
+		toggles.forEach( function ( toggle ) {
+			var isActive = toggle.getAttribute( 'data-unit' ) === unit;
+
+			toggle.classList.toggle( 'sbc-unit-toggle__button--active', isActive );
+			toggle.setAttribute( 'aria-pressed', isActive ? 'true' : 'false' );
+			toggle.tabIndex = isActive ? 0 : -1;
+		} );
+	}
+
+	function calculateBmi( calculator ) {
+		var unit = getCurrentUnit( calculator );
+		var heightInput = calculator.querySelector( '[data-field="height"]' );
+		var weightInput = calculator.querySelector( '[data-field="weight"]' );
+		var height = parseNumber( heightInput ? heightInput.value : '' );
+		var weight = parseNumber( weightInput ? weightInput.value : '' );
+
+		if ( ! height && '' !== ( heightInput ? heightInput.value.trim() : '' ) ) {
+			return 'invalid';
 		}
 
-		if ( inches === null ) {
-			inches = 0;
+		if ( ! weight && '' !== ( weightInput ? weightInput.value.trim() : '' ) ) {
+			return 'invalid';
 		}
 
-		if ( weight === null || weight <= 0 ) {
+		if ( null === height || null === weight || '' === heightInput.value.trim() || '' === weightInput.value.trim() ) {
 			return null;
 		}
 
-		var totalInches = ( feet * 12 ) + inches;
-
-		if ( totalInches <= 0 ) {
-			return null;
+		if ( height <= 0 || weight <= 0 ) {
+			return 'invalid';
 		}
 
-		return ( weight / ( totalInches * totalInches ) ) * 703;
+		if ( 'imperial' === unit ) {
+			return ( weight * 703 ) / ( height * height );
+		}
+
+		return weight / Math.pow( height / 100, 2 );
+	}
+
+	function renderResult( calculator ) {
+		var result = calculator.querySelector( '.sbc-result' );
+		var resultNumber = calculator.querySelector( '.sbc-result__number' );
+		var resultBadge = calculator.querySelector( '.sbc-result__badge' );
+		var bmi = calculateBmi( calculator );
+
+		if ( 'invalid' === bmi ) {
+			setError( calculator, i18n.errorMessage || 'Please enter valid height and weight values.' );
+			resetResult( calculator );
+			return;
+		}
+
+		if ( null === bmi ) {
+			setError( calculator, '' );
+			resetResult( calculator );
+			return;
+		}
+
+		var category = getCategoryData( bmi );
+
+		setError( calculator, '' );
+
+		if ( result ) {
+			result.hidden = false;
+		}
+
+		if ( resultNumber ) {
+			resultNumber.textContent = bmi.toFixed( 1 );
+			resultNumber.className = 'sbc-result__number ' + category.numberClass;
+		}
+
+		if ( resultBadge ) {
+			resultBadge.textContent = category.label;
+			resultBadge.className = 'sbc-result__badge ' + category.badgeClass;
+		}
 	}
 
 	function bindCalculator( calculator ) {
-		var button = calculator.querySelector( '.sbc-button' );
 		var toggles = calculator.querySelectorAll( '.sbc-unit-toggle__button' );
+		var inputs = calculator.querySelectorAll( '.sbc-input' );
 		var defaultUnit = getCurrentUnit( calculator );
 
 		setActiveUnit( calculator, defaultUnit );
+		resetResult( calculator );
 
 		toggles.forEach( function ( toggle ) {
 			toggle.addEventListener( 'click', function () {
 				setActiveUnit( calculator, toggle.getAttribute( 'data-unit' ) );
-				clearFeedback( calculator );
+				renderResult( calculator );
 			} );
 
 			toggle.addEventListener( 'keydown', function ( event ) {
@@ -171,22 +202,10 @@
 			} );
 		} );
 
-		if ( ! button ) {
-			return;
-		}
-
-		button.addEventListener( 'click', function () {
-			var unit = getCurrentUnit( calculator );
-			var bmi = unit === 'imperial' ? calculateImperial( calculator ) : calculateMetric( calculator );
-
-			if ( bmi === null ) {
-				setError( calculator, i18n.errorMessage || 'Please enter valid height and weight values.' );
-				setResult( calculator, '-', '-' );
-				return;
-			}
-
-			setError( calculator, '' );
-			setResult( calculator, bmi.toFixed( 1 ), getCategory( bmi ) );
+		inputs.forEach( function ( input ) {
+			input.addEventListener( 'input', function () {
+				renderResult( calculator );
+			} );
 		} );
 	}
 

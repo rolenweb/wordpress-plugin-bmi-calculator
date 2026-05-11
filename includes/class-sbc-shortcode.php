@@ -79,9 +79,6 @@ class SBC_Shortcode {
 		$title     = sanitize_text_field( wp_unslash( $atts['title'] ) );
 		$is_imperial = 'imperial' === $unit;
 		$title_text  = ! empty( $title ) ? $title : esc_html__( 'BMI Calculator', 'simple-bmi-calculator' );
-		$unit_label  = $is_imperial ? esc_html__( 'Imperial units', 'simple-bmi-calculator' ) : esc_html__( 'Metric units', 'simple-bmi-calculator' );
-		$theme_label = 'minimal' === $theme ? esc_html__( 'Minimal', 'simple-bmi-calculator' ) : esc_html__( 'Default', 'simple-bmi-calculator' );
-
 		$instance_id = wp_unique_id( 'sbc-calculator-' );
 
 		$this->assets->enqueue_assets( array() );
@@ -97,74 +94,43 @@ class SBC_Shortcode {
 			data-current-unit="<?php echo esc_attr( $unit ); ?>"
 			data-theme="<?php echo esc_attr( $theme ); ?>"
 		>
-			<div class="sbc-calculator__header">
-				<div class="sbc-calculator__header-copy">
-					<p class="sbc-calculator__eyebrow"><?php echo esc_html__( 'Health calculator', 'simple-bmi-calculator' ); ?></p>
-					<h2 class="sbc-calculator__title"><?php echo esc_html( $title_text ); ?></h2>
-					<p class="sbc-calculator__description"><?php echo esc_html__( 'Estimate body mass index using metric or imperial measurements.', 'simple-bmi-calculator' ); ?></p>
-				</div>
-				<div class="sbc-calculator__header-meta">
-					<span class="sbc-calculator__theme-tag"><?php echo esc_html( $theme_label ); ?></span>
-					<span class="sbc-calculator__unit-tag"><?php echo esc_html( $unit_label ); ?></span>
-				</div>
+			<h2 class="sbc-calculator__title"><?php echo esc_html( $title_text ); ?></h2>
+
+			<div class="sbc-unit-toggle" role="group" aria-label="<?php echo esc_attr__( 'Measurement system', 'simple-bmi-calculator' ); ?>">
+				<button type="button" class="sbc-unit-toggle__button <?php echo esc_attr( 'metric' === $unit ? 'sbc-unit-toggle__button--active' : '' ); ?>" data-unit="metric" aria-pressed="<?php echo esc_attr( 'metric' === $unit ? 'true' : 'false' ); ?>">
+					<?php echo esc_html__( 'Metric', 'simple-bmi-calculator' ); ?>
+				</button>
+				<button type="button" class="sbc-unit-toggle__button <?php echo esc_attr( 'imperial' === $unit ? 'sbc-unit-toggle__button--active' : '' ); ?>" data-unit="imperial" aria-pressed="<?php echo esc_attr( 'imperial' === $unit ? 'true' : 'false' ); ?>">
+					<?php echo esc_html__( 'Imperial', 'simple-bmi-calculator' ); ?>
+				</button>
 			</div>
 
-			<div class="sbc-calculator__unit-switcher">
-				<p class="sbc-calculator__unit-label"><?php echo esc_html__( 'Measurement system', 'simple-bmi-calculator' ); ?></p>
-				<div class="sbc-unit-toggle" role="group" aria-label="<?php echo esc_attr__( 'Measurement system', 'simple-bmi-calculator' ); ?>">
-					<button type="button" class="sbc-unit-toggle__button <?php echo esc_attr( 'metric' === $unit ? 'sbc-unit-toggle__button--active' : '' ); ?>" data-unit="metric" aria-pressed="<?php echo esc_attr( 'metric' === $unit ? 'true' : 'false' ); ?>">
-						<?php echo esc_html__( 'Metric', 'simple-bmi-calculator' ); ?>
-					</button>
-					<button type="button" class="sbc-unit-toggle__button <?php echo esc_attr( 'imperial' === $unit ? 'sbc-unit-toggle__button--active' : '' ); ?>" data-unit="imperial" aria-pressed="<?php echo esc_attr( 'imperial' === $unit ? 'true' : 'false' ); ?>">
-						<?php echo esc_html__( 'Imperial', 'simple-bmi-calculator' ); ?>
-					</button>
+			<div class="sbc-fields">
+				<div class="sbc-field">
+					<label for="<?php echo esc_attr( $instance_id . '-height' ); ?>" class="sbc-field__label" data-label-metric="<?php echo esc_attr__( 'Height (cm)', 'simple-bmi-calculator' ); ?>" data-label-imperial="<?php echo esc_attr__( 'Height (inches)', 'simple-bmi-calculator' ); ?>">
+						<?php echo esc_html( $is_imperial ? esc_html__( 'Height (inches)', 'simple-bmi-calculator' ) : esc_html__( 'Height (cm)', 'simple-bmi-calculator' ) ); ?>
+					</label>
+					<input id="<?php echo esc_attr( $instance_id . '-height' ); ?>" class="sbc-input" type="number" min="1" step="0.1" inputmode="decimal" placeholder="0" data-field="height" />
 				</div>
-			</div>
-
-			<div class="sbc-calculator__form-shell">
-				<div class="sbc-fields sbc-fields--metric" data-unit-group="metric" aria-hidden="<?php echo esc_attr( $is_imperial ? 'true' : 'false' ); ?>" <?php if ( $is_imperial ) : ?>hidden<?php endif; ?>>
-					<p class="sbc-fields__title"><?php echo esc_html__( 'Metric measurements', 'simple-bmi-calculator' ); ?></p>
-					<div class="sbc-field">
-						<label for="<?php echo esc_attr( $instance_id . '-height-cm' ); ?>"><?php echo esc_html__( 'Height (cm)', 'simple-bmi-calculator' ); ?></label>
-						<input id="<?php echo esc_attr( $instance_id . '-height-cm' ); ?>" class="sbc-input" type="number" min="1" step="0.1" inputmode="decimal" <?php if ( $is_imperial ) : ?>disabled<?php endif; ?> />
-					</div>
-					<div class="sbc-field">
-						<label for="<?php echo esc_attr( $instance_id . '-weight-kg' ); ?>"><?php echo esc_html__( 'Weight (kg)', 'simple-bmi-calculator' ); ?></label>
-						<input id="<?php echo esc_attr( $instance_id . '-weight-kg' ); ?>" class="sbc-input" type="number" min="1" step="0.1" inputmode="decimal" <?php if ( $is_imperial ) : ?>disabled<?php endif; ?> />
-					</div>
+				<div class="sbc-field">
+					<label for="<?php echo esc_attr( $instance_id . '-weight' ); ?>" class="sbc-field__label" data-label-metric="<?php echo esc_attr__( 'Weight (kg)', 'simple-bmi-calculator' ); ?>" data-label-imperial="<?php echo esc_attr__( 'Weight (lbs)', 'simple-bmi-calculator' ); ?>">
+						<?php echo esc_html( $is_imperial ? esc_html__( 'Weight (lbs)', 'simple-bmi-calculator' ) : esc_html__( 'Weight (kg)', 'simple-bmi-calculator' ) ); ?>
+					</label>
+					<input id="<?php echo esc_attr( $instance_id . '-weight' ); ?>" class="sbc-input" type="number" min="1" step="0.1" inputmode="decimal" placeholder="0" data-field="weight" />
 				</div>
-
-				<div class="sbc-fields sbc-fields--imperial" data-unit-group="imperial" aria-hidden="<?php echo esc_attr( $is_imperial ? 'false' : 'true' ); ?>" <?php if ( ! $is_imperial ) : ?>hidden<?php endif; ?>>
-					<p class="sbc-fields__title"><?php echo esc_html__( 'Imperial measurements', 'simple-bmi-calculator' ); ?></p>
-					<div class="sbc-field">
-						<label for="<?php echo esc_attr( $instance_id . '-height-ft' ); ?>"><?php echo esc_html__( 'Height (ft)', 'simple-bmi-calculator' ); ?></label>
-						<input id="<?php echo esc_attr( $instance_id . '-height-ft' ); ?>" class="sbc-input" type="number" min="0" step="1" inputmode="numeric" <?php if ( ! $is_imperial ) : ?>disabled<?php endif; ?> />
-					</div>
-					<div class="sbc-field">
-						<label for="<?php echo esc_attr( $instance_id . '-height-in' ); ?>"><?php echo esc_html__( 'Additional inches', 'simple-bmi-calculator' ); ?></label>
-						<input id="<?php echo esc_attr( $instance_id . '-height-in' ); ?>" class="sbc-input" type="number" min="0" step="1" inputmode="numeric" <?php if ( ! $is_imperial ) : ?>disabled<?php endif; ?> />
-					</div>
-					<div class="sbc-field">
-						<label for="<?php echo esc_attr( $instance_id . '-weight-lb' ); ?>"><?php echo esc_html__( 'Weight (lb)', 'simple-bmi-calculator' ); ?></label>
-						<input id="<?php echo esc_attr( $instance_id . '-weight-lb' ); ?>" class="sbc-input" type="number" min="1" step="0.1" inputmode="decimal" <?php if ( ! $is_imperial ) : ?>disabled<?php endif; ?> />
-					</div>
-				</div>
-			</div>
-
-			<div class="sbc-calculator__actions">
-				<button type="button" class="sbc-button"><?php echo esc_html__( 'Calculate BMI', 'simple-bmi-calculator' ); ?></button>
 			</div>
 
 			<p class="sbc-error" role="alert" aria-live="polite" hidden></p>
 
-			<div class="sbc-result" aria-live="polite">
-				<div class="sbc-result__panel">
-					<p class="sbc-result__label"><?php echo esc_html__( 'Your BMI', 'simple-bmi-calculator' ); ?></p>
-					<p class="sbc-result__number">-</p>
-				</div>
-				<div class="sbc-result__panel">
-					<p class="sbc-result__label"><?php echo esc_html__( 'Category', 'simple-bmi-calculator' ); ?></p>
-					<p class="sbc-result__category-text">-</p>
+			<div class="sbc-result" aria-live="polite" hidden>
+				<p class="sbc-result__eyebrow"><?php echo esc_html__( 'Your Score', 'simple-bmi-calculator' ); ?></p>
+				<p class="sbc-result__number">0.0</p>
+				<p class="sbc-result__badge"><?php echo esc_html__( 'Healthy', 'simple-bmi-calculator' ); ?></p>
+				<div class="sbc-result__scale" aria-hidden="true">
+					<div class="sbc-result__scale-segment sbc-result__scale-segment--underweight"></div>
+					<div class="sbc-result__scale-segment sbc-result__scale-segment--healthy"></div>
+					<div class="sbc-result__scale-segment sbc-result__scale-segment--overweight"></div>
+					<div class="sbc-result__scale-segment sbc-result__scale-segment--obese"></div>
 				</div>
 			</div>
 
