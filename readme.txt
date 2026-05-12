@@ -27,8 +27,6 @@ Use shortcode examples:
 * `[bmi_calculator]`
 * `[bmi_calculator unit="metric"]`
 * `[bmi_calculator unit="imperial"]`
-* `[bmi_calculator theme="default"]`
-* `[bmi_calculator theme="minimal"]`
 * `[bmi_calculator title="Check Your BMI"]`
 
 == Installation ==
