@@ -87,7 +87,7 @@ class SBC_Shortcode {
 		$raw_unit  = sanitize_key( wp_unslash( $atts['unit'] ) );
 		$raw_theme = sanitize_key( wp_unslash( $atts['theme'] ) );
 		$unit      = in_array( $raw_unit, array( 'metric', 'imperial' ), true ) ? $raw_unit : $options['default_unit'];
-		$theme     = in_array( $raw_theme, array( 'default', 'minimal' ), true ) ? $raw_theme : $options['default_theme'];
+		$theme     = $this->normalize_theme( $raw_theme, $options['default_theme'] );
 		$title     = sanitize_text_field( wp_unslash( $atts['title'] ) );
 		$is_imperial = 'imperial' === $unit;
 		$title_text  = '' !== $title ? $title : esc_html__( 'BMI Calculator', 'simple-bmi-calculator' );
@@ -236,6 +236,25 @@ class SBC_Shortcode {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Normalize supported theme values while keeping legacy aliases working.
+	 *
+	 * @param string $theme Raw theme value.
+	 * @param string $fallback Fallback theme.
+	 * @return string
+	 */
+	private function normalize_theme( $theme, $fallback ) {
+		if ( 'default' === $theme ) {
+			$theme = 'modern';
+		}
+
+		if ( 'default' === $fallback ) {
+			$fallback = 'modern';
+		}
+
+		return in_array( $theme, array( 'modern', 'minimal' ), true ) ? $theme : $fallback;
 	}
 
 	/**

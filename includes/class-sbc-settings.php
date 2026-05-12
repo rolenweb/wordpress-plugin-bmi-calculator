@@ -62,7 +62,7 @@ class SBC_Settings {
 		return array_merge(
 			array(
 				'default_unit'            => 'metric',
-				'default_theme'           => 'default',
+				'default_theme'           => 'modern',
 				'disclaimer_text'         => 'BMI is a general screening tool and is not medical advice.',
 				'show_credit_link'        => 0,
 				'credit_link_text'        => 'Powered by BodyMetricCalculator.com',
@@ -311,8 +311,14 @@ class SBC_Settings {
 			? $input['default_unit']
 			: $defaults['default_unit'];
 
-		$output['default_theme'] = ( isset( $input['default_theme'] ) && in_array( $input['default_theme'], array( 'default', 'minimal' ), true ) )
-			? $input['default_theme']
+		$theme = isset( $input['default_theme'] ) ? sanitize_key( $input['default_theme'] ) : '';
+
+		if ( 'default' === $theme ) {
+			$theme = 'modern';
+		}
+
+		$output['default_theme'] = in_array( $theme, array( 'modern', 'minimal' ), true )
+			? $theme
 			: $defaults['default_theme'];
 
 		$output['disclaimer_text'] = isset( $input['disclaimer_text'] ) ? sanitize_textarea_field( $input['disclaimer_text'] ) : $defaults['disclaimer_text'];
@@ -438,7 +444,7 @@ class SBC_Settings {
 		$options = $this->get_options();
 		?>
 		<select name="<?php echo esc_attr( self::OPTION_NAME ); ?>[default_theme]">
-			<option value="default" <?php selected( $options['default_theme'], 'default' ); ?>><?php echo esc_html__( 'Default', 'simple-bmi-calculator' ); ?></option>
+			<option value="modern" <?php selected( $options['default_theme'], 'modern' ); ?>><?php echo esc_html__( 'Modern', 'simple-bmi-calculator' ); ?></option>
 			<option value="minimal" <?php selected( $options['default_theme'], 'minimal' ); ?>><?php echo esc_html__( 'Minimal', 'simple-bmi-calculator' ); ?></option>
 		</select>
 		<?php

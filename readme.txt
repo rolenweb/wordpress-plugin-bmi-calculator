@@ -32,6 +32,7 @@ Use shortcode examples:
 * `[bmi_calculator]`
 * `[bmi_calculator unit="metric"]`
 * `[bmi_calculator unit="imperial"]`
+* `[bmi_calculator theme="modern"]`
 * `[bmi_calculator theme="minimal"]`
 * `[bmi_calculator title="Check Your BMI"]`
 * `[bmi_calculator primary_color="#2563eb"]`
