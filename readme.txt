@@ -4,7 +4,7 @@ Tags: bmi calculator, health calculator, fitness calculator, body mass index, sh
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,9 +21,11 @@ Features include:
 * Shortcode support with configurable unit, theme, and title attributes.
 * Metric and imperial BMI calculation in the browser with instant feedback.
 * Single-card interface with live score updates and category badge output.
+* Custom color controls with safe per-site defaults and optional per-shortcode primary color override.
+* Optional editable credit link with placement controls and no hidden backlinks.
+* FAQ schema support and WebApplication schema support.
 * Responsive, accessible frontend with keyboard-friendly unit controls.
-* Optional visible credit link controlled entirely by plugin settings.
-* No external requests, no tracking, and no personal data collection.
+* No external requests, no tracking, no hidden backlinks, and no personal data collection.
 
 Use shortcode examples:
 
@@ -32,6 +34,9 @@ Use shortcode examples:
 * `[bmi_calculator unit="imperial"]`
 * `[bmi_calculator theme="minimal"]`
 * `[bmi_calculator title="Check Your BMI"]`
+* `[bmi_calculator primary_color="#2563eb"]`
+* `[bmi_calculator show_credit="false"]`
+* `[bmi_calculator show_schema="true"]`
 
 == Installation ==
 
@@ -48,7 +53,7 @@ No. The calculator runs in the browser and does not store or transmit user measu
 
 = Does the plugin add backlinks automatically? =
 
-No. The credit link is disabled by default and only appears if a site owner enables it in settings.
+No. The credit link is disabled by default and only appears as a visible link if a site owner enables it in settings. The plugin does not add hidden backlinks or invisible links.
 
 = Can I use imperial or metric units? =
 
@@ -62,6 +67,14 @@ Metric mode uses height in centimeters and weight in kilograms. Imperial mode us
 
 Yes. The BMI score and category update automatically as visitors enter valid values.
 
+= Can I customize the calculator colors? =
+
+Yes. The settings page includes scoped color controls for the frontend calculator card, text, borders, and result states.
+
+= Does the plugin support structured data? =
+
+Yes. You can enable FAQ schema and WebApplication schema in the settings page. Schema is only output on pages where the calculator shortcode is rendered.
+
 == Screenshots ==
 
 1. Default theme calculator displayed on the frontend with live BMI result output.
@@ -69,6 +82,14 @@ Yes. The BMI score and category update automatically as visitors enter valid val
 3. Settings page with shortcode defaults and optional credit link controls.
 
 == Changelog ==
+
+= 1.1.0 =
+
+* Added custom color controls using safe CSS variables.
+* Added editable visible credit link settings with placement options and new-tab control.
+* Added FAQ schema and WebApplication schema output when the shortcode is present.
+* Added shortcode overrides for `primary_color`, `show_credit`, and `show_schema`.
+* Added uninstall cleanup for plugin settings.
 
 = 1.0.0 =
 

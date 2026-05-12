@@ -1,20 +1,21 @@
 .sbc-calculator {
-	--sbc-page: #f8fafc;
-	--sbc-card: #ffffff;
-	--sbc-border: #e2e8f0;
-	--sbc-text: #1e293b;
-	--sbc-text-soft: #64748b;
-	--sbc-input-bg: #f8fafc;
-	--sbc-shadow: 0 24px 48px rgba(15, 23, 42, 0.12);
-	--sbc-blue: #3b82f6;
-	--sbc-emerald: #10b981;
-	--sbc-orange: #f97316;
-	--sbc-rose: #e11d48;
-	background: var(--sbc-page);
-	border: 1px solid #f1f5f9;
+	--sbc-primary: #2563eb;
+	--sbc-primary-hover: #1d4ed8;
+	--sbc-primary-rgb: 37 99 235;
+	--sbc-card-bg: #ffffff;
+	--sbc-text: #111827;
+	--sbc-muted-text: #6b7280;
+	--sbc-border: #e5e7eb;
+	--sbc-result-bg: #f3f4f6;
+	--sbc-success: #16a34a;
+	--sbc-warning: #f59e0b;
+	--sbc-danger: #dc2626;
+	background: var(--sbc-card-bg);
+	border: 1px solid var(--sbc-border);
 	border-radius: 24px;
-	box-shadow: var(--sbc-shadow);
+	box-shadow: 0 24px 48px rgba(15, 23, 42, 0.12);
 	box-sizing: border-box;
+	color: var(--sbc-text);
 	margin: 1rem auto;
 	max-width: 32rem;
 	padding: 2rem;
@@ -37,7 +38,7 @@
 }
 
 .sbc-calculator .sbc-unit-toggle {
-	background: #f1f5f9;
+	background: var(--sbc-result-bg);
 	border-radius: 0.75rem;
 	display: flex;
 	gap: 0.25rem;
@@ -50,7 +51,7 @@
 	background: transparent;
 	border: 0;
 	border-radius: 0.625rem;
-	color: var(--sbc-text-soft);
+	color: var(--sbc-muted-text);
 	cursor: pointer;
 	flex: 1;
 	font-size: 0.875rem;
@@ -69,9 +70,9 @@
 .sbc-calculator .sbc-unit-toggle__button--active,
 .sbc-calculator .sbc-unit-toggle__button--active:hover,
 .sbc-calculator .sbc-unit-toggle__button--active:focus-visible {
-	background: #ffffff;
-	box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
-	color: var(--sbc-text);
+	background: var(--sbc-primary);
+	box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
+	color: #ffffff;
 }
 
 .sbc-calculator .sbc-fields {
@@ -80,7 +81,7 @@
 }
 
 .sbc-calculator .sbc-field__label {
-	color: #475569;
+	color: var(--sbc-muted-text);
 	display: block;
 	font-size: 0.875rem;
 	font-weight: 600;
@@ -88,7 +89,7 @@
 }
 
 .sbc-calculator .sbc-input {
-	background: var(--sbc-input-bg);
+	background: var(--sbc-card-bg);
 	border: 1px solid var(--sbc-border);
 	border-radius: 1rem;
 	color: var(--sbc-text);
@@ -100,20 +101,21 @@
 }
 
 .sbc-calculator .sbc-input:focus {
-	border-color: var(--sbc-blue);
-	box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+	border-color: var(--sbc-primary);
+	box-shadow: 0 0 0 3px rgb(var(--sbc-primary-rgb) / 0.18);
 	outline: none;
 }
 
 .sbc-calculator .sbc-input::placeholder {
-	color: #94a3b8;
+	color: var(--sbc-muted-text);
+	opacity: 0.7;
 }
 
 .sbc-calculator .sbc-error {
 	background: #fff1f2;
 	border: 1px solid #fecdd3;
 	border-radius: 0.875rem;
-	color: #be123c;
+	color: var(--sbc-danger);
 	font-size: 0.9375rem;
 	font-weight: 500;
 	line-height: 1.5;
@@ -122,14 +124,16 @@
 }
 
 .sbc-calculator .sbc-result {
-	border-top: 1px solid #f1f5f9;
-	margin-top: 2.5rem;
-	padding-top: 2rem;
+	background: var(--sbc-result-bg);
+	border: 1px solid var(--sbc-border);
+	border-radius: 1rem;
+	margin-top: 2rem;
+	padding: 1.5rem;
 	text-align: center;
 }
 
 .sbc-calculator .sbc-result__eyebrow {
-	color: #64748b;
+	color: var(--sbc-muted-text);
 	font-size: 0.75rem;
 	font-weight: 700;
 	letter-spacing: 0.18em;
@@ -145,19 +149,19 @@
 }
 
 .sbc-calculator .sbc-result__number--underweight {
-	color: var(--sbc-blue);
+	color: var(--sbc-primary);
 }
 
 .sbc-calculator .sbc-result__number--healthy {
-	color: var(--sbc-emerald);
+	color: var(--sbc-success);
 }
 
 .sbc-calculator .sbc-result__number--overweight {
-	color: var(--sbc-orange);
+	color: var(--sbc-warning);
 }
 
 .sbc-calculator .sbc-result__number--obese {
-	color: var(--sbc-rose);
+	color: var(--sbc-danger);
 }
 
 .sbc-calculator .sbc-result__badge {
@@ -171,23 +175,23 @@
 }
 
 .sbc-calculator .sbc-result__badge--underweight {
-	background: var(--sbc-blue);
+	background: var(--sbc-primary);
 }
 
 .sbc-calculator .sbc-result__badge--healthy {
-	background: var(--sbc-emerald);
+	background: var(--sbc-success);
 }
 
 .sbc-calculator .sbc-result__badge--overweight {
-	background: var(--sbc-orange);
+	background: var(--sbc-warning);
 }
 
 .sbc-calculator .sbc-result__badge--obese {
-	background: var(--sbc-rose);
+	background: var(--sbc-danger);
 }
 
 .sbc-calculator .sbc-result__scale {
-	background: #e2e8f0;
+	background: var(--sbc-card-bg);
 	border-radius: 999px;
 	display: flex;
 	height: 0.5rem;
@@ -200,46 +204,64 @@
 }
 
 .sbc-calculator .sbc-result__scale-segment--underweight {
-	background: #60a5fa;
+	background: var(--sbc-primary);
+	opacity: 0.75;
 }
 
 .sbc-calculator .sbc-result__scale-segment--healthy {
-	background: #34d399;
+	background: var(--sbc-success);
+	opacity: 0.75;
 }
 
 .sbc-calculator .sbc-result__scale-segment--overweight {
-	background: #fb923c;
+	background: var(--sbc-warning);
+	opacity: 0.75;
 }
 
 .sbc-calculator .sbc-result__scale-segment--obese {
-	background: #f43f5e;
+	background: var(--sbc-danger);
+	opacity: 0.75;
 }
 
 .sbc-calculator .sbc-disclaimer,
-.sbc-calculator .sbc-credit {
-	color: var(--sbc-text-soft);
+.sbc-calculator .sbc-credit,
+.sbc-calculator .sbc-footer {
+	color: var(--sbc-muted-text);
 	font-size: 0.875rem;
 	line-height: 1.6;
-	margin: 1rem 0 0;
 	text-align: center;
 }
 
+.sbc-calculator .sbc-disclaimer {
+	margin: 1rem 0 0;
+}
+
+.sbc-calculator .sbc-credit {
+	margin: 1rem 0 0;
+}
+
 .sbc-calculator .sbc-credit a {
-	color: #2563eb;
+	color: var(--sbc-primary);
+	font-weight: 500;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.15em;
+}
+
+.sbc-calculator .sbc-credit a:hover,
+.sbc-calculator .sbc-credit a:focus-visible {
+	color: var(--sbc-primary-hover);
+	outline: none;
+}
+
+.sbc-calculator .sbc-footer {
+	border-top: 1px solid var(--sbc-border);
+	margin-top: 1.25rem;
+	padding-top: 1rem;
 }
 
 .sbc-calculator.sbc-theme-minimal {
-	--sbc-page: #ffffff;
-	--sbc-card: #ffffff;
-	--sbc-border: #dbe4ee;
-	--sbc-text: #0f172a;
-	--sbc-text-soft: #475569;
-	--sbc-input-bg: #ffffff;
-	--sbc-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
-	--sbc-blue: #0284c7;
-	--sbc-emerald: #059669;
-	--sbc-orange: #ea580c;
-	--sbc-rose: #e11d48;
+	border-radius: 20px;
+	box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
 }
 
 @media (max-width: 640px) {

@@ -36,6 +36,13 @@ class SBC_Plugin {
 	private $settings;
 
 	/**
+	 * Schema handler.
+	 *
+	 * @var SBC_Schema
+	 */
+	private $schema;
+
+	/**
 	 * Shortcode handler.
 	 *
 	 * @var SBC_Shortcode
@@ -63,10 +70,12 @@ class SBC_Plugin {
 
 		$this->assets    = new SBC_Assets();
 		$this->settings  = new SBC_Settings();
-		$this->shortcode = new SBC_Shortcode( $this->assets, $this->settings );
+		$this->schema    = new SBC_Schema( $this->settings );
+		$this->shortcode = new SBC_Shortcode( $this->assets, $this->settings, $this->schema );
 
 		$this->settings->init();
 		$this->assets->init();
+		$this->schema->init();
 		$this->shortcode->init();
 	}
 

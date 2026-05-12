@@ -22,18 +22,63 @@ class SBC_Settings {
 	const OPTION_NAME = 'simple_bmi_calculator_options';
 
 	/**
+	 * Credit link placement options.
+	 *
+	 * @var string[]
+	 */
+	private static $credit_placements = array(
+		'under_calculator',
+		'under_result',
+		'footer',
+		'none',
+	);
+
+	/**
+	 * Supported color fields and defaults.
+	 *
+	 * @return array<string, string>
+	 */
+	public static function get_color_defaults() {
+		return array(
+			'primary_color'       => '#2563eb',
+			'primary_hover_color' => '#1d4ed8',
+			'card_background'     => '#ffffff',
+			'text_color'          => '#111827',
+			'muted_text_color'    => '#6b7280',
+			'border_color'        => '#e5e7eb',
+			'result_background'   => '#f3f4f6',
+			'success_color'       => '#16a34a',
+			'warning_color'       => '#f59e0b',
+			'danger_color'        => '#dc2626',
+		);
+	}
+
+	/**
 	 * Get plugin defaults.
 	 *
 	 * @return array
 	 */
 	public static function get_defaults() {
-		return array(
-			'default_unit'      => 'metric',
-			'default_theme'     => 'default',
-			'show_credit_link'  => 0,
-			'credit_link_url'   => 'https://bodymetriccalculator.com/bmi-calculator/',
-			'credit_link_text'  => 'BMI calculator by Simple BMI Calculator',
-			'disclaimer_text'   => 'BMI is a general screening tool and is not medical advice.',
+		return array_merge(
+			array(
+				'default_unit'            => 'metric',
+				'default_theme'           => 'default',
+				'disclaimer_text'         => 'BMI is a general screening tool and is not medical advice.',
+				'show_credit_link'        => 0,
+				'credit_link_text'        => 'Powered by BodyMetricCalculator.com',
+				'credit_link_url'         => 'https://bodymetriccalculator.com/',
+				'credit_link_placement'   => 'under_calculator',
+				'open_credit_new_tab'     => 1,
+				'enable_faq_schema'       => 0,
+				'enable_calculator_schema'=> 1,
+				'faq_question_1'          => '',
+				'faq_answer_1'            => '',
+				'faq_question_2'          => '',
+				'faq_answer_2'            => '',
+				'faq_question_3'          => '',
+				'faq_answer_3'            => '',
+			),
+			self::get_color_defaults()
 		);
 	}
 
@@ -91,8 +136,8 @@ class SBC_Settings {
 
 		add_settings_section(
 			'sbc_general_section',
-			esc_html__( 'Calculator Settings', 'simple-bmi-calculator' ),
-			'__return_false',
+			esc_html__( 'General', 'simple-bmi-calculator' ),
+			array( $this, 'render_general_section_description' ),
 			'simple-bmi-calculator'
 		);
 
@@ -113,19 +158,46 @@ class SBC_Settings {
 		);
 
 		add_settings_field(
-			'show_credit_link',
-			esc_html__( 'Show credit link', 'simple-bmi-calculator' ),
-			array( $this, 'render_show_credit_link_field' ),
+			'disclaimer_text',
+			esc_html__( 'Custom disclaimer text', 'simple-bmi-calculator' ),
+			array( $this, 'render_disclaimer_text_field' ),
 			'simple-bmi-calculator',
 			'sbc_general_section'
 		);
 
+		add_settings_section(
+			'sbc_colors_section',
+			esc_html__( 'Colors', 'simple-bmi-calculator' ),
+			array( $this, 'render_colors_section_description' ),
+			'simple-bmi-calculator'
+		);
+
+		foreach ( $this->get_color_field_map() as $field_key => $field_label ) {
+			add_settings_field(
+				$field_key,
+				$field_label,
+				array( $this, 'render_color_field' ),
+				'simple-bmi-calculator',
+				'sbc_colors_section',
+				array(
+					'field_key' => $field_key,
+				)
+			);
+		}
+
+		add_settings_section(
+			'sbc_credit_section',
+			esc_html__( 'Credit Link', 'simple-bmi-calculator' ),
+			array( $this, 'render_credit_section_description' ),
+			'simple-bmi-calculator'
+		);
+
 		add_settings_field(
-			'credit_link_url',
-			esc_html__( 'Credit link URL', 'simple-bmi-calculator' ),
-			array( $this, 'render_credit_link_url_field' ),
+			'show_credit_link',
+			esc_html__( 'Show credit link', 'simple-bmi-calculator' ),
+			array( $this, 'render_show_credit_link_field' ),
 			'simple-bmi-calculator',
-			'sbc_general_section'
+			'sbc_credit_section'
 		);
 
 		add_settings_field(
@@ -133,16 +205,95 @@ class SBC_Settings {
 			esc_html__( 'Credit link text', 'simple-bmi-calculator' ),
 			array( $this, 'render_credit_link_text_field' ),
 			'simple-bmi-calculator',
-			'sbc_general_section'
+			'sbc_credit_section'
 		);
 
 		add_settings_field(
-			'disclaimer_text',
-			esc_html__( 'Custom disclaimer text', 'simple-bmi-calculator' ),
-			array( $this, 'render_disclaimer_text_field' ),
+			'credit_link_url',
+			esc_html__( 'Credit link URL', 'simple-bmi-calculator' ),
+			array( $this, 'render_credit_link_url_field' ),
 			'simple-bmi-calculator',
-			'sbc_general_section'
+			'sbc_credit_section'
 		);
+
+		add_settings_field(
+			'credit_link_placement',
+			esc_html__( 'Credit link placement', 'simple-bmi-calculator' ),
+			array( $this, 'render_credit_link_placement_field' ),
+			'simple-bmi-calculator',
+			'sbc_credit_section'
+		);
+
+		add_settings_field(
+			'open_credit_new_tab',
+			esc_html__( 'Open credit link in new tab', 'simple-bmi-calculator' ),
+			array( $this, 'render_open_credit_new_tab_field' ),
+			'simple-bmi-calculator',
+			'sbc_credit_section'
+		);
+
+		add_settings_field(
+			'credit_link_rel',
+			esc_html__( 'Credit link rel attribute', 'simple-bmi-calculator' ),
+			array( $this, 'render_credit_link_rel_field' ),
+			'simple-bmi-calculator',
+			'sbc_credit_section'
+		);
+
+		add_settings_section(
+			'sbc_schema_section',
+			esc_html__( 'Schema Markup', 'simple-bmi-calculator' ),
+			array( $this, 'render_schema_section_description' ),
+			'simple-bmi-calculator'
+		);
+
+		add_settings_field(
+			'enable_faq_schema',
+			esc_html__( 'Enable FAQ schema', 'simple-bmi-calculator' ),
+			array( $this, 'render_enable_faq_schema_field' ),
+			'simple-bmi-calculator',
+			'sbc_schema_section'
+		);
+
+		add_settings_field(
+			'enable_calculator_schema',
+			esc_html__( 'Enable calculator schema', 'simple-bmi-calculator' ),
+			array( $this, 'render_enable_calculator_schema_field' ),
+			'simple-bmi-calculator',
+			'sbc_schema_section'
+		);
+
+		for ( $index = 1; $index <= 3; $index++ ) {
+			add_settings_field(
+				'faq_question_' . $index,
+				sprintf(
+					/* translators: %d: FAQ item number. */
+					esc_html__( 'FAQ question %d', 'simple-bmi-calculator' ),
+					$index
+				),
+				array( $this, 'render_faq_question_field' ),
+				'simple-bmi-calculator',
+				'sbc_schema_section',
+				array(
+					'index' => $index,
+				)
+			);
+
+			add_settings_field(
+				'faq_answer_' . $index,
+				sprintf(
+					/* translators: %d: FAQ item number. */
+					esc_html__( 'FAQ answer %d', 'simple-bmi-calculator' ),
+					$index
+				),
+				array( $this, 'render_faq_answer_field' ),
+				'simple-bmi-calculator',
+				'sbc_schema_section',
+				array(
+					'index' => $index,
+				)
+			);
+		}
 	}
 
 	/**
@@ -154,6 +305,7 @@ class SBC_Settings {
 	public function sanitize_settings( $input ) {
 		$defaults = self::get_defaults();
 		$output   = array();
+		$input    = is_array( $input ) ? $input : array();
 
 		$output['default_unit'] = ( isset( $input['default_unit'] ) && in_array( $input['default_unit'], array( 'metric', 'imperial' ), true ) )
 			? $input['default_unit']
@@ -163,21 +315,40 @@ class SBC_Settings {
 			? $input['default_theme']
 			: $defaults['default_theme'];
 
+		$output['disclaimer_text'] = isset( $input['disclaimer_text'] ) ? sanitize_textarea_field( $input['disclaimer_text'] ) : $defaults['disclaimer_text'];
 		$output['show_credit_link'] = isset( $input['show_credit_link'] ) ? 1 : 0;
-		$output['credit_link_url']  = isset( $input['credit_link_url'] ) ? sanitize_url( $input['credit_link_url'] ) : $defaults['credit_link_url'];
 		$output['credit_link_text'] = isset( $input['credit_link_text'] ) ? sanitize_text_field( $input['credit_link_text'] ) : $defaults['credit_link_text'];
-		$output['disclaimer_text']  = isset( $input['disclaimer_text'] ) ? sanitize_textarea_field( $input['disclaimer_text'] ) : $defaults['disclaimer_text'];
+		$output['credit_link_url'] = isset( $input['credit_link_url'] ) ? esc_url_raw( $input['credit_link_url'] ) : $defaults['credit_link_url'];
+		$output['credit_link_placement'] = ( isset( $input['credit_link_placement'] ) && in_array( $input['credit_link_placement'], self::$credit_placements, true ) )
+			? $input['credit_link_placement']
+			: $defaults['credit_link_placement'];
+		$output['open_credit_new_tab'] = isset( $input['open_credit_new_tab'] ) ? 1 : 0;
+		$output['enable_faq_schema'] = isset( $input['enable_faq_schema'] ) ? 1 : 0;
+		$output['enable_calculator_schema'] = isset( $input['enable_calculator_schema'] ) ? 1 : 0;
+
+		if ( '' === $output['disclaimer_text'] ) {
+			$output['disclaimer_text'] = $defaults['disclaimer_text'];
+		}
+
+		if ( '' === $output['credit_link_text'] ) {
+			$output['credit_link_text'] = $defaults['credit_link_text'];
+		}
 
 		if ( empty( $output['credit_link_url'] ) ) {
 			$output['credit_link_url'] = $defaults['credit_link_url'];
 		}
 
-		if ( empty( $output['credit_link_text'] ) ) {
-			$output['credit_link_text'] = $defaults['credit_link_text'];
+		foreach ( self::get_color_defaults() as $field_key => $default_color ) {
+			$sanitized_color = isset( $input[ $field_key ] ) ? sanitize_hex_color( $input[ $field_key ] ) : null;
+			$output[ $field_key ] = $sanitized_color ? $sanitized_color : $default_color;
 		}
 
-		if ( empty( $output['disclaimer_text'] ) ) {
-			$output['disclaimer_text'] = $defaults['disclaimer_text'];
+		for ( $index = 1; $index <= 3; $index++ ) {
+			$question_key = 'faq_question_' . $index;
+			$answer_key   = 'faq_answer_' . $index;
+
+			$output[ $question_key ] = isset( $input[ $question_key ] ) ? sanitize_text_field( $input[ $question_key ] ) : '';
+			$output[ $answer_key ]   = isset( $input[ $answer_key ] ) ? sanitize_textarea_field( $input[ $answer_key ] ) : '';
 		}
 
 		return $output;
@@ -195,7 +366,7 @@ class SBC_Settings {
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html__( 'Simple BMI Calculator', 'simple-bmi-calculator' ); ?></h1>
-			<p><?php echo esc_html__( 'Credit link is optional. Enable it only if you want to support the plugin author.', 'simple-bmi-calculator' ); ?></p>
+			<p><?php echo esc_html__( 'Configure calculator defaults, colors, visible credit behavior, and optional schema output. This plugin does not add hidden backlinks or tracking.', 'simple-bmi-calculator' ); ?></p>
 			<form action="options.php" method="post">
 				<?php
 				settings_fields( 'sbc_settings_group' );
@@ -205,6 +376,42 @@ class SBC_Settings {
 			</form>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Render general section description.
+	 *
+	 * @return void
+	 */
+	public function render_general_section_description() {
+		echo '<p>' . esc_html__( 'Set the default calculator behavior used when shortcode attributes are not provided.', 'simple-bmi-calculator' ) . '</p>';
+	}
+
+	/**
+	 * Render colors section description.
+	 *
+	 * @return void
+	 */
+	public function render_colors_section_description() {
+		echo '<p>' . esc_html__( 'Customize the frontend card using scoped CSS variables. Invalid values fall back to safe defaults.', 'simple-bmi-calculator' ) . '</p>';
+	}
+
+	/**
+	 * Render credit section description.
+	 *
+	 * @return void
+	 */
+	public function render_credit_section_description() {
+		echo '<p>' . esc_html__( 'The credit link is always optional, visible when enabled, and never rendered as a hidden or forced backlink.', 'simple-bmi-calculator' ) . '</p>';
+	}
+
+	/**
+	 * Render schema section description.
+	 *
+	 * @return void
+	 */
+	public function render_schema_section_description() {
+		echo '<p>' . esc_html__( 'Schema markup is output only on pages where the calculator shortcode appears, and only once per page.', 'simple-bmi-calculator' ) . '</p>';
 	}
 
 	/**
@@ -238,7 +445,44 @@ class SBC_Settings {
 	}
 
 	/**
-	 * Render credit link field.
+	 * Render disclaimer field.
+	 *
+	 * @return void
+	 */
+	public function render_disclaimer_text_field() {
+		$options = $this->get_options();
+		?>
+		<textarea
+			class="large-text"
+			name="<?php echo esc_attr( self::OPTION_NAME ); ?>[disclaimer_text]"
+			rows="3"
+		><?php echo esc_textarea( $options['disclaimer_text'] ); ?></textarea>
+		<?php
+	}
+
+	/**
+	 * Render a color field.
+	 *
+	 * @param array $args Field args.
+	 * @return void
+	 */
+	public function render_color_field( $args ) {
+		$options   = $this->get_options();
+		$field_key = isset( $args['field_key'] ) ? sanitize_key( $args['field_key'] ) : '';
+		$value     = isset( $options[ $field_key ] ) ? $options[ $field_key ] : '';
+		?>
+		<input
+			class="regular-text sbc-color-field"
+			name="<?php echo esc_attr( self::OPTION_NAME ); ?>[<?php echo esc_attr( $field_key ); ?>]"
+			type="text"
+			pattern="^#[A-Fa-f0-9]{6}$"
+			value="<?php echo esc_attr( $value ); ?>"
+		/>
+		<?php
+	}
+
+	/**
+	 * Render show credit link field.
 	 *
 	 * @return void
 	 */
@@ -253,25 +497,8 @@ class SBC_Settings {
 				value="1"
 				<?php checked( (int) $options['show_credit_link'], 1 ); ?>
 			/>
-			<?php echo esc_html__( 'Display an optional visible credit link below the calculator.', 'simple-bmi-calculator' ); ?>
+			<?php echo esc_html__( 'Display a visible credit link when enabled by the site owner.', 'simple-bmi-calculator' ); ?>
 		</label>
-		<?php
-	}
-
-	/**
-	 * Render credit link URL field.
-	 *
-	 * @return void
-	 */
-	public function render_credit_link_url_field() {
-		$options = $this->get_options();
-		?>
-		<input
-			class="regular-text"
-			name="<?php echo esc_attr( self::OPTION_NAME ); ?>[credit_link_url]"
-			type="url"
-			value="<?php echo esc_attr( $options['credit_link_url'] ); ?>"
-		/>
 		<?php
 	}
 
@@ -293,18 +520,168 @@ class SBC_Settings {
 	}
 
 	/**
-	 * Render disclaimer field.
+	 * Render credit link URL field.
 	 *
 	 * @return void
 	 */
-	public function render_disclaimer_text_field() {
+	public function render_credit_link_url_field() {
 		$options = $this->get_options();
+		?>
+		<input
+			class="regular-text"
+			name="<?php echo esc_attr( self::OPTION_NAME ); ?>[credit_link_url]"
+			type="url"
+			value="<?php echo esc_attr( $options['credit_link_url'] ); ?>"
+		/>
+		<?php
+	}
+
+	/**
+	 * Render credit placement field.
+	 *
+	 * @return void
+	 */
+	public function render_credit_link_placement_field() {
+		$options = $this->get_options();
+		?>
+		<select name="<?php echo esc_attr( self::OPTION_NAME ); ?>[credit_link_placement]">
+			<option value="under_calculator" <?php selected( $options['credit_link_placement'], 'under_calculator' ); ?>><?php echo esc_html__( 'Under calculator', 'simple-bmi-calculator' ); ?></option>
+			<option value="under_result" <?php selected( $options['credit_link_placement'], 'under_result' ); ?>><?php echo esc_html__( 'Under result', 'simple-bmi-calculator' ); ?></option>
+			<option value="footer" <?php selected( $options['credit_link_placement'], 'footer' ); ?>><?php echo esc_html__( 'Footer', 'simple-bmi-calculator' ); ?></option>
+			<option value="none" <?php selected( $options['credit_link_placement'], 'none' ); ?>><?php echo esc_html__( 'None', 'simple-bmi-calculator' ); ?></option>
+		</select>
+		<?php
+	}
+
+	/**
+	 * Render open credit in new tab field.
+	 *
+	 * @return void
+	 */
+	public function render_open_credit_new_tab_field() {
+		$options = $this->get_options();
+		?>
+		<label for="sbc-open-credit-new-tab">
+			<input
+				id="sbc-open-credit-new-tab"
+				name="<?php echo esc_attr( self::OPTION_NAME ); ?>[open_credit_new_tab]"
+				type="checkbox"
+				value="1"
+				<?php checked( (int) $options['open_credit_new_tab'], 1 ); ?>
+			/>
+			<?php echo esc_html__( 'Open the visible credit link in a new tab.', 'simple-bmi-calculator' ); ?>
+		</label>
+		<?php
+	}
+
+	/**
+	 * Render rel attribute note.
+	 *
+	 * @return void
+	 */
+	public function render_credit_link_rel_field() {
+		echo '<code>nofollow sponsored noopener noreferrer</code>';
+		echo '<p class="description">' . esc_html__( 'The free version always keeps nofollow and sponsored on the visible credit link.', 'simple-bmi-calculator' ) . '</p>';
+	}
+
+	/**
+	 * Render enable FAQ schema field.
+	 *
+	 * @return void
+	 */
+	public function render_enable_faq_schema_field() {
+		$options = $this->get_options();
+		?>
+		<label for="sbc-enable-faq-schema">
+			<input
+				id="sbc-enable-faq-schema"
+				name="<?php echo esc_attr( self::OPTION_NAME ); ?>[enable_faq_schema]"
+				type="checkbox"
+				value="1"
+				<?php checked( (int) $options['enable_faq_schema'], 1 ); ?>
+			/>
+			<?php echo esc_html__( 'Output FAQPage JSON-LD when the calculator shortcode is present and valid FAQ items exist.', 'simple-bmi-calculator' ); ?>
+		</label>
+		<?php
+	}
+
+	/**
+	 * Render enable calculator schema field.
+	 *
+	 * @return void
+	 */
+	public function render_enable_calculator_schema_field() {
+		$options = $this->get_options();
+		?>
+		<label for="sbc-enable-calculator-schema">
+			<input
+				id="sbc-enable-calculator-schema"
+				name="<?php echo esc_attr( self::OPTION_NAME ); ?>[enable_calculator_schema]"
+				type="checkbox"
+				value="1"
+				<?php checked( (int) $options['enable_calculator_schema'], 1 ); ?>
+			/>
+			<?php echo esc_html__( 'Output WebApplication JSON-LD when the calculator shortcode is present.', 'simple-bmi-calculator' ); ?>
+		</label>
+		<?php
+	}
+
+	/**
+	 * Render FAQ question field.
+	 *
+	 * @param array $args Field args.
+	 * @return void
+	 */
+	public function render_faq_question_field( $args ) {
+		$options = $this->get_options();
+		$index   = isset( $args['index'] ) ? (int) $args['index'] : 1;
+		$key     = 'faq_question_' . $index;
+		?>
+		<input
+			class="regular-text"
+			name="<?php echo esc_attr( self::OPTION_NAME ); ?>[<?php echo esc_attr( $key ); ?>]"
+			type="text"
+			value="<?php echo esc_attr( $options[ $key ] ); ?>"
+		/>
+		<?php
+	}
+
+	/**
+	 * Render FAQ answer field.
+	 *
+	 * @param array $args Field args.
+	 * @return void
+	 */
+	public function render_faq_answer_field( $args ) {
+		$options = $this->get_options();
+		$index   = isset( $args['index'] ) ? (int) $args['index'] : 1;
+		$key     = 'faq_answer_' . $index;
 		?>
 		<textarea
 			class="large-text"
-			name="<?php echo esc_attr( self::OPTION_NAME ); ?>[disclaimer_text]"
+			name="<?php echo esc_attr( self::OPTION_NAME ); ?>[<?php echo esc_attr( $key ); ?>]"
 			rows="3"
-		><?php echo esc_textarea( $options['disclaimer_text'] ); ?></textarea>
+		><?php echo esc_textarea( $options[ $key ] ); ?></textarea>
 		<?php
+	}
+
+	/**
+	 * Get color field labels.
+	 *
+	 * @return array<string, string>
+	 */
+	private function get_color_field_map() {
+		return array(
+			'primary_color'       => esc_html__( 'Primary color', 'simple-bmi-calculator' ),
+			'primary_hover_color' => esc_html__( 'Primary hover color', 'simple-bmi-calculator' ),
+			'card_background'     => esc_html__( 'Card background color', 'simple-bmi-calculator' ),
+			'text_color'          => esc_html__( 'Text color', 'simple-bmi-calculator' ),
+			'muted_text_color'    => esc_html__( 'Muted text color', 'simple-bmi-calculator' ),
+			'border_color'        => esc_html__( 'Border color', 'simple-bmi-calculator' ),
+			'result_background'   => esc_html__( 'Result background color', 'simple-bmi-calculator' ),
+			'success_color'       => esc_html__( 'Success/category color', 'simple-bmi-calculator' ),
+			'warning_color'       => esc_html__( 'Warning/category color', 'simple-bmi-calculator' ),
+			'danger_color'        => esc_html__( 'Danger/category color', 'simple-bmi-calculator' ),
+		);
 	}
 }

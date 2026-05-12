@@ -61,9 +61,14 @@
 		var result = calculator.querySelector( '.sbc-result' );
 		var resultNumber = calculator.querySelector( '.sbc-result__number' );
 		var resultBadge = calculator.querySelector( '.sbc-result__badge' );
+		var underResultCredit = calculator.querySelector( '.sbc-credit--under-result' );
 
 		if ( result ) {
 			result.hidden = true;
+		}
+
+		if ( underResultCredit ) {
+			underResultCredit.hidden = true;
 		}
 
 		if ( resultNumber ) {
@@ -135,6 +140,7 @@
 		var result = calculator.querySelector( '.sbc-result' );
 		var resultNumber = calculator.querySelector( '.sbc-result__number' );
 		var resultBadge = calculator.querySelector( '.sbc-result__badge' );
+		var underResultCredit = calculator.querySelector( '.sbc-credit--under-result' );
 		var bmi = calculateBmi( calculator );
 
 		if ( 'invalid' === bmi ) {
@@ -155,6 +161,10 @@
 
 		if ( result ) {
 			result.hidden = false;
+		}
+
+		if ( underResultCredit ) {
+			underResultCredit.hidden = false;
 		}
 
 		if ( resultNumber ) {
