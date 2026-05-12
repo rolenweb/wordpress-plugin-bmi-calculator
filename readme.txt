@@ -14,11 +14,14 @@ Simple BMI Calculator adds a lightweight, accessible body mass index calculator 
 
 Simple BMI Calculator is a free shortcode-based plugin for WordPress site owners who want a clean BMI calculator without external dependencies, tracking, or hidden backlinks.
 
+The frontend uses a modern card layout with a metric/imperial toggle, live result updates as visitors type, and a clear BMI status display with color-coded categories.
+
 Features include:
 
 * Shortcode support with configurable unit, theme, and title attributes.
-* Metric and imperial BMI calculation in the browser.
-* Responsive, accessible frontend with keyboard-friendly controls.
+* Metric and imperial BMI calculation in the browser with instant feedback.
+* Single-card interface with live score updates and category badge output.
+* Responsive, accessible frontend with keyboard-friendly unit controls.
 * Optional visible credit link controlled entirely by plugin settings.
 * No external requests, no tracking, and no personal data collection.
 
@@ -27,6 +30,7 @@ Use shortcode examples:
 * `[bmi_calculator]`
 * `[bmi_calculator unit="metric"]`
 * `[bmi_calculator unit="imperial"]`
+* `[bmi_calculator theme="minimal"]`
 * `[bmi_calculator title="Check Your BMI"]`
 
 == Installation ==
@@ -50,9 +54,17 @@ No. The credit link is disabled by default and only appears if a site owner enab
 
 Yes. You can set a default in settings and visitors can switch units directly in the calculator interface.
 
+= What inputs does the calculator use? =
+
+Metric mode uses height in centimeters and weight in kilograms. Imperial mode uses height in inches and weight in pounds.
+
+= Does the result update automatically? =
+
+Yes. The BMI score and category update automatically as visitors enter valid values.
+
 == Screenshots ==
 
-1. Default theme calculator displayed on the frontend.
+1. Default theme calculator displayed on the frontend with live BMI result output.
 2. Minimal theme calculator displayed on the frontend.
 3. Settings page with shortcode defaults and optional credit link controls.
 
