@@ -1,4 +1,4 @@
-# BodyMetric BMI Calculator
+# Wordpress BMI Calculator
 
 A lightweight WordPress BMI calculator plugin with metric and imperial units, custom colors, optional schema markup, and shortcode support.
 
