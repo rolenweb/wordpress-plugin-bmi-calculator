@@ -5,48 +5,62 @@
 	var i18n = config.i18n || {};
 
 	function parseNumber( value ) {
-		var parsed = parseFloat( value );
+		var normalizedValue = typeof value === 'string' ? value.trim() : '';
 
-		return Number.isFinite( parsed ) ? parsed : null;
+		if ( '' === normalizedValue ) {
+			return null;
+		}
+
+		var parsedValue = parseFloat( normalizedValue );
+
+		return Number.isFinite( parsedValue ) ? parsedValue : false;
 	}
 
 	function getCurrentUnit( calculator ) {
 		return calculator.getAttribute( 'data-current-unit' ) || calculator.getAttribute( 'data-default-unit' ) || 'metric';
 	}
 
-	function getCategoryData( bmi ) {
+	function getField( calculator, fieldName ) {
+		return calculator.querySelector( '[data-field="' + fieldName + '"]' );
+	}
+
+	function getCategory( bmi ) {
 		if ( bmi < 18.5 ) {
 			return {
 				label: i18n.underweight || 'Underweight',
-				numberClass: 'sbc-result__number--underweight',
-				badgeClass: 'sbc-result__badge--underweight',
+				range: 'Below 18.5',
+				feedback: 'Your BMI is below the standard adult reference range.',
+				tone: 'warning',
 			};
 		}
 
 		if ( bmi < 25 ) {
 			return {
-				label: i18n.healthy || 'Healthy',
-				numberClass: 'sbc-result__number--healthy',
-				badgeClass: 'sbc-result__badge--healthy',
+				label: i18n.normalWeight || 'Normal Weight',
+				range: '18.5 - 24.9',
+				feedback: 'Your BMI is within the standard adult reference range.',
+				tone: 'success',
 			};
 		}
 
 		if ( bmi < 30 ) {
 			return {
 				label: i18n.overweight || 'Overweight',
-				numberClass: 'sbc-result__number--overweight',
-				badgeClass: 'sbc-result__badge--overweight',
+				range: '25 - 29.9',
+				feedback: 'Your BMI is above the standard adult reference range.',
+				tone: 'warning',
 			};
 		}
 
 		return {
-			label: i18n.obese || 'Obese',
-			numberClass: 'sbc-result__number--obese',
-			badgeClass: 'sbc-result__badge--obese',
+			label: i18n.obesity || 'Obesity',
+			range: '30+',
+			feedback: 'Your BMI is in a high adult reference range.',
+			tone: 'danger',
 		};
 	}
 
-	function setError( calculator, message ) {
+	function showError( calculator, message ) {
 		var errorNode = calculator.querySelector( '.sbc-error' );
 
 		if ( ! errorNode ) {
@@ -57,45 +71,169 @@
 		errorNode.hidden = ! message;
 	}
 
-	function resetResult( calculator ) {
-		var result = calculator.querySelector( '.sbc-result' );
-		var resultNumber = calculator.querySelector( '.sbc-result__number' );
-		var resultBadge = calculator.querySelector( '.sbc-result__badge' );
+	function clearResult( calculator ) {
+		var resultBox = calculator.querySelector( '.sbc-result-box' );
+		var bmiValue = calculator.querySelector( '.sbc-bmi-value' );
+		var categoryBadge = calculator.querySelector( '.sbc-category-badge' );
+		var rangeText = calculator.querySelector( '.sbc-range-text' );
+		var feedbackText = calculator.querySelector( '.sbc-feedback-text' );
 		var underResultCredit = calculator.querySelector( '.sbc-credit--under-result' );
 
-		if ( result ) {
-			result.hidden = true;
+		if ( resultBox ) {
+			resultBox.hidden = true;
+			resultBox.classList.remove( 'sbc-result-box--success', 'sbc-result-box--warning', 'sbc-result-box--danger' );
+		}
+
+		if ( bmiValue ) {
+			bmiValue.textContent = '0.0';
+			bmiValue.classList.remove( 'sbc-bmi-value--success', 'sbc-bmi-value--warning', 'sbc-bmi-value--danger' );
+		}
+
+		if ( categoryBadge ) {
+			categoryBadge.textContent = i18n.normalWeight || 'Normal Weight';
+			categoryBadge.classList.remove( 'sbc-category-badge--success', 'sbc-category-badge--warning', 'sbc-category-badge--danger' );
+		}
+
+		if ( rangeText ) {
+			rangeText.textContent = ( i18n.rangePrefix || 'Reference range:' ) + ' 18.5 - 24.9';
+		}
+
+		if ( feedbackText ) {
+			feedbackText.textContent = 'Your BMI is within the standard adult reference range.';
 		}
 
 		if ( underResultCredit ) {
 			underResultCredit.hidden = true;
 		}
+	}
 
-		if ( resultNumber ) {
-			resultNumber.textContent = '0.0';
-			resultNumber.className = 'sbc-result__number';
+	function updateResult( calculator, result ) {
+		var resultBox = calculator.querySelector( '.sbc-result-box' );
+		var bmiValue = calculator.querySelector( '.sbc-bmi-value' );
+		var categoryBadge = calculator.querySelector( '.sbc-category-badge' );
+		var rangeText = calculator.querySelector( '.sbc-range-text' );
+		var feedbackText = calculator.querySelector( '.sbc-feedback-text' );
+		var underResultCredit = calculator.querySelector( '.sbc-credit--under-result' );
+		var category = getCategory( result.bmi );
+		var toneClass = category.tone;
+
+		showError( calculator, '' );
+
+		if ( resultBox ) {
+			resultBox.hidden = false;
+			resultBox.classList.remove( 'sbc-result-box--success', 'sbc-result-box--warning', 'sbc-result-box--danger' );
+			resultBox.classList.add( 'sbc-result-box--' + toneClass );
 		}
 
-		if ( resultBadge ) {
-			resultBadge.textContent = i18n.healthy || 'Healthy';
-			resultBadge.className = 'sbc-result__badge';
+		if ( bmiValue ) {
+			bmiValue.textContent = result.bmi.toFixed( 1 );
+			bmiValue.classList.remove( 'sbc-bmi-value--success', 'sbc-bmi-value--warning', 'sbc-bmi-value--danger' );
+			bmiValue.classList.add( 'sbc-bmi-value--' + toneClass );
+		}
+
+		if ( categoryBadge ) {
+			categoryBadge.textContent = category.label;
+			categoryBadge.classList.remove( 'sbc-category-badge--success', 'sbc-category-badge--warning', 'sbc-category-badge--danger' );
+			categoryBadge.classList.add( 'sbc-category-badge--' + toneClass );
+		}
+
+		if ( rangeText ) {
+			rangeText.textContent = ( i18n.rangePrefix || 'Reference range:' ) + ' ' + category.range;
+		}
+
+		if ( feedbackText ) {
+			feedbackText.textContent = category.feedback;
+		}
+
+		if ( underResultCredit ) {
+			underResultCredit.hidden = false;
 		}
 	}
 
-	function updateLabels( calculator, unit ) {
-		calculator.querySelectorAll( '.sbc-field__label' ).forEach( function ( label ) {
-			var metricLabel = label.getAttribute( 'data-label-metric' );
-			var imperialLabel = label.getAttribute( 'data-label-imperial' );
+	function calculateBMI( calculator ) {
+		var unit = getCurrentUnit( calculator );
 
-			label.textContent = unit === 'imperial' ? imperialLabel : metricLabel;
+		if ( 'imperial' === unit ) {
+			var feet = parseNumber( getField( calculator, 'height-ft' ).value );
+			var inches = parseNumber( getField( calculator, 'height-in' ).value );
+			var weightLb = parseNumber( getField( calculator, 'weight-lb' ).value );
+			var hasFeet = null !== feet;
+			var hasInches = null !== inches;
+			var hasWeightLb = null !== weightLb;
+
+			if ( false === feet || false === inches || false === weightLb ) {
+				return { status: 'invalid' };
+			}
+
+			if ( ! hasFeet && ! hasInches && ! hasWeightLb ) {
+				return { status: 'empty' };
+			}
+
+			if ( ! hasWeightLb || ( ! hasFeet && ! hasInches ) ) {
+				return { status: 'incomplete' };
+			}
+
+			if ( feet < 0 || inches < 0 || weightLb <= 0 ) {
+				return { status: 'invalid' };
+			}
+
+			var heightInches = ( feet * 12 ) + inches;
+
+			if ( heightInches <= 0 ) {
+				return { status: 'invalid' };
+			}
+
+			return {
+				status: 'valid',
+				bmi: ( 703 * weightLb ) / ( heightInches * heightInches ),
+			};
+		}
+
+		var heightCm = parseNumber( getField( calculator, 'height-cm' ).value );
+		var weightKg = parseNumber( getField( calculator, 'weight-kg' ).value );
+		var hasHeightCm = null !== heightCm;
+		var hasWeightKg = null !== weightKg;
+
+		if ( false === heightCm || false === weightKg ) {
+			return { status: 'invalid' };
+		}
+
+		if ( ! hasHeightCm && ! hasWeightKg ) {
+			return { status: 'empty' };
+		}
+
+		if ( ! hasHeightCm || ! hasWeightKg ) {
+			return { status: 'incomplete' };
+		}
+
+		if ( heightCm <= 0 || weightKg <= 0 ) {
+			return { status: 'invalid' };
+		}
+
+		return {
+			status: 'valid',
+			bmi: weightKg / ( ( heightCm / 100 ) * ( heightCm / 100 ) ),
+		};
+	}
+
+	function syncFieldGroups( calculator, unit ) {
+		calculator.querySelectorAll( '[data-unit-fields]' ).forEach( function ( group ) {
+			var isActive = group.getAttribute( 'data-unit-fields' ) === unit;
+
+			group.hidden = ! isActive;
+
+			group.querySelectorAll( '.sbc-input' ).forEach( function ( input ) {
+				input.disabled = ! isActive;
+			} );
 		} );
 	}
 
-	function setActiveUnit( calculator, unit ) {
+	function setUnit( calculator, unit ) {
 		var toggles = calculator.querySelectorAll( '.sbc-unit-toggle__button' );
 
 		calculator.setAttribute( 'data-current-unit', unit );
-		updateLabels( calculator, unit );
+		calculator.classList.toggle( 'sbc-unit-metric', 'metric' === unit );
+		calculator.classList.toggle( 'sbc-unit-imperial', 'imperial' === unit );
 
 		toggles.forEach( function ( toggle ) {
 			var isActive = toggle.getAttribute( 'data-unit' ) === unit;
@@ -104,122 +242,92 @@
 			toggle.setAttribute( 'aria-pressed', isActive ? 'true' : 'false' );
 			toggle.tabIndex = isActive ? 0 : -1;
 		} );
+
+		syncFieldGroups( calculator, unit );
+		showError( calculator, '' );
+		clearResult( calculator );
 	}
 
-	function calculateBmi( calculator ) {
+	function processCalculation( calculator, showIncompleteError ) {
+		var result = calculateBMI( calculator );
 		var unit = getCurrentUnit( calculator );
-		var heightInput = calculator.querySelector( '[data-field="height"]' );
-		var weightInput = calculator.querySelector( '[data-field="weight"]' );
-		var height = parseNumber( heightInput ? heightInput.value : '' );
-		var weight = parseNumber( weightInput ? weightInput.value : '' );
+		var errorMessage = 'imperial' === unit
+			? ( i18n.errorImperial || 'Enter valid height in feet and inches, and weight in pounds.' )
+			: ( i18n.errorMetric || 'Enter valid height in centimeters and weight in kilograms.' );
 
-		if ( ! height && '' !== ( heightInput ? heightInput.value.trim() : '' ) ) {
-			return 'invalid';
-		}
-
-		if ( ! weight && '' !== ( weightInput ? weightInput.value.trim() : '' ) ) {
-			return 'invalid';
-		}
-
-		if ( null === height || null === weight || '' === heightInput.value.trim() || '' === weightInput.value.trim() ) {
-			return null;
-		}
-
-		if ( height <= 0 || weight <= 0 ) {
-			return 'invalid';
-		}
-
-		if ( 'imperial' === unit ) {
-			return ( weight * 703 ) / ( height * height );
-		}
-
-		return weight / Math.pow( height / 100, 2 );
-	}
-
-	function renderResult( calculator ) {
-		var result = calculator.querySelector( '.sbc-result' );
-		var resultNumber = calculator.querySelector( '.sbc-result__number' );
-		var resultBadge = calculator.querySelector( '.sbc-result__badge' );
-		var underResultCredit = calculator.querySelector( '.sbc-credit--under-result' );
-		var bmi = calculateBmi( calculator );
-
-		if ( 'invalid' === bmi ) {
-			setError( calculator, i18n.errorMessage || 'Please enter valid height and weight values.' );
-			resetResult( calculator );
+		if ( 'valid' === result.status ) {
+			updateResult( calculator, result );
 			return;
 		}
 
-		if ( null === bmi ) {
-			setError( calculator, '' );
-			resetResult( calculator );
+		clearResult( calculator );
+
+		if ( 'invalid' === result.status || ( showIncompleteError && 'incomplete' === result.status ) ) {
+			showError( calculator, errorMessage );
 			return;
 		}
 
-		var category = getCategoryData( bmi );
-
-		setError( calculator, '' );
-
-		if ( result ) {
-			result.hidden = false;
-		}
-
-		if ( underResultCredit ) {
-			underResultCredit.hidden = false;
-		}
-
-		if ( resultNumber ) {
-			resultNumber.textContent = bmi.toFixed( 1 );
-			resultNumber.className = 'sbc-result__number ' + category.numberClass;
-		}
-
-		if ( resultBadge ) {
-			resultBadge.textContent = category.label;
-			resultBadge.className = 'sbc-result__badge ' + category.badgeClass;
-		}
+		showError( calculator, '' );
 	}
 
-	function bindCalculator( calculator ) {
-		var toggles = calculator.querySelectorAll( '.sbc-unit-toggle__button' );
-		var inputs = calculator.querySelectorAll( '.sbc-input' );
-		var defaultUnit = getCurrentUnit( calculator );
-
-		setActiveUnit( calculator, defaultUnit );
-		resetResult( calculator );
-
+	function bindToggleKeyboard( toggles ) {
 		toggles.forEach( function ( toggle ) {
-			toggle.addEventListener( 'click', function () {
-				setActiveUnit( calculator, toggle.getAttribute( 'data-unit' ) );
-				renderResult( calculator );
-			} );
-
 			toggle.addEventListener( 'keydown', function ( event ) {
-				if ( event.key !== 'ArrowLeft' && event.key !== 'ArrowRight' ) {
+				if ( 'ArrowLeft' !== event.key && 'ArrowRight' !== event.key ) {
 					return;
 				}
 
 				event.preventDefault();
 
-				var direction = event.key === 'ArrowRight' ? 1 : -1;
 				var toggleList = Array.prototype.slice.call( toggles );
 				var currentIndex = toggleList.indexOf( toggle );
-				var nextIndex = ( currentIndex + direction + toggleList.length ) % toggleList.length;
-				var nextToggle = toggleList[ nextIndex ];
+				var nextIndex = 'ArrowRight' === event.key ? currentIndex + 1 : currentIndex - 1;
 
-				if ( nextToggle ) {
-					nextToggle.focus();
-					nextToggle.click();
+				if ( nextIndex < 0 ) {
+					nextIndex = toggleList.length - 1;
 				}
+
+				if ( nextIndex >= toggleList.length ) {
+					nextIndex = 0;
+				}
+
+				toggleList[ nextIndex ].focus();
+				toggleList[ nextIndex ].click();
+			} );
+		} );
+	}
+
+	function initCalculator( calculator ) {
+		var toggles = calculator.querySelectorAll( '.sbc-unit-toggle__button' );
+		var inputs = calculator.querySelectorAll( '.sbc-input' );
+		var button = calculator.querySelector( '.sbc-calc-btn' );
+		var defaultUnit = getCurrentUnit( calculator );
+
+		setUnit( calculator, defaultUnit );
+		bindToggleKeyboard( toggles );
+
+		toggles.forEach( function ( toggle ) {
+			toggle.addEventListener( 'click', function () {
+				setUnit( calculator, toggle.getAttribute( 'data-unit' ) );
 			} );
 		} );
 
 		inputs.forEach( function ( input ) {
 			input.addEventListener( 'input', function () {
-				renderResult( calculator );
+				processCalculation( calculator, false );
 			} );
 		} );
+
+		if ( button ) {
+			button.addEventListener( 'click', function () {
+				processCalculation( calculator, true );
+			} );
+		}
 	}
 
 	document.addEventListener( 'DOMContentLoaded', function () {
-		document.querySelectorAll( '.sbc-calculator' ).forEach( bindCalculator );
+		document.querySelectorAll( '.sbc-calculator' ).forEach( function ( calculator ) {
+			initCalculator( calculator );
+		} );
 	} );
 }() );

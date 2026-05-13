@@ -84,14 +84,21 @@ class SBC_Shortcode {
 			'bmi_calculator'
 		);
 
-		$raw_unit  = sanitize_key( wp_unslash( $atts['unit'] ) );
-		$raw_theme = sanitize_key( wp_unslash( $atts['theme'] ) );
-		$unit      = in_array( $raw_unit, array( 'metric', 'imperial' ), true ) ? $raw_unit : $options['default_unit'];
-		$theme     = $this->normalize_theme( $raw_theme, $options['default_theme'] );
-		$title     = sanitize_text_field( wp_unslash( $atts['title'] ) );
-		$is_imperial = 'imperial' === $unit;
-		$title_text  = '' !== $title ? $title : esc_html__( 'BMI Calculator', 'simple-bmi-calculator' );
-		$instance_id = wp_unique_id( 'sbc-calculator-' );
+		$raw_unit           = sanitize_key( wp_unslash( $atts['unit'] ) );
+		$raw_theme          = sanitize_key( wp_unslash( $atts['theme'] ) );
+		$unit               = in_array( $raw_unit, array( 'metric', 'imperial' ), true ) ? $raw_unit : $options['default_unit'];
+		$theme              = $this->normalize_theme( $raw_theme, $options['default_theme'] );
+		$title              = sanitize_text_field( wp_unslash( $atts['title'] ) );
+		$title_text         = '' !== $title ? $title : esc_html__( 'BMI Calculator', 'simple-bmi-calculator' );
+		$subtitle_text      = esc_html__( 'Calculate your Body Mass Index', 'simple-bmi-calculator' );
+		$instance_id        = wp_unique_id( 'sbc-calculator-' );
+		$metric_hidden      = 'metric' !== $unit;
+		$imperial_hidden    = 'imperial' !== $unit;
+		$metric_height_id   = $instance_id . '-height-cm';
+		$metric_weight_id   = $instance_id . '-weight-kg';
+		$imperial_feet_id   = $instance_id . '-height-ft';
+		$imperial_inches_id = $instance_id . '-height-in';
+		$imperial_weight_id = $instance_id . '-weight-lb';
 
 		$show_credit_override = $this->parse_optional_bool( $atts['show_credit'] );
 		$show_schema_override = $this->parse_optional_bool( $atts['show_schema'] );
@@ -118,61 +125,7 @@ class SBC_Shortcode {
 				style="<?php echo esc_attr( $wrapper_style ); ?>"
 			<?php endif; ?>
 		>
-			<h2 class="sbc-calculator__title"><?php echo esc_html( $title_text ); ?></h2>
-
-			<div class="sbc-unit-toggle" role="group" aria-label="<?php echo esc_attr__( 'Measurement system', 'simple-bmi-calculator' ); ?>">
-				<button type="button" class="sbc-unit-toggle__button <?php echo esc_attr( 'metric' === $unit ? 'sbc-unit-toggle__button--active' : '' ); ?>" data-unit="metric" aria-pressed="<?php echo esc_attr( 'metric' === $unit ? 'true' : 'false' ); ?>">
-					<?php echo esc_html__( 'Metric', 'simple-bmi-calculator' ); ?>
-				</button>
-				<button type="button" class="sbc-unit-toggle__button <?php echo esc_attr( 'imperial' === $unit ? 'sbc-unit-toggle__button--active' : '' ); ?>" data-unit="imperial" aria-pressed="<?php echo esc_attr( 'imperial' === $unit ? 'true' : 'false' ); ?>">
-					<?php echo esc_html__( 'Imperial', 'simple-bmi-calculator' ); ?>
-				</button>
-			</div>
-
-			<div class="sbc-fields">
-				<div class="sbc-field">
-					<label for="<?php echo esc_attr( $instance_id . '-height' ); ?>" class="sbc-field__label" data-label-metric="<?php echo esc_attr__( 'Height (cm)', 'simple-bmi-calculator' ); ?>" data-label-imperial="<?php echo esc_attr__( 'Height (inches)', 'simple-bmi-calculator' ); ?>">
-						<?php echo esc_html( $is_imperial ? esc_html__( 'Height (inches)', 'simple-bmi-calculator' ) : esc_html__( 'Height (cm)', 'simple-bmi-calculator' ) ); ?>
-					</label>
-					<input id="<?php echo esc_attr( $instance_id . '-height' ); ?>" class="sbc-input" type="number" min="1" step="0.1" inputmode="decimal" placeholder="0" data-field="height" />
-				</div>
-				<div class="sbc-field">
-					<label for="<?php echo esc_attr( $instance_id . '-weight' ); ?>" class="sbc-field__label" data-label-metric="<?php echo esc_attr__( 'Weight (kg)', 'simple-bmi-calculator' ); ?>" data-label-imperial="<?php echo esc_attr__( 'Weight (lbs)', 'simple-bmi-calculator' ); ?>">
-						<?php echo esc_html( $is_imperial ? esc_html__( 'Weight (lbs)', 'simple-bmi-calculator' ) : esc_html__( 'Weight (kg)', 'simple-bmi-calculator' ) ); ?>
-					</label>
-					<input id="<?php echo esc_attr( $instance_id . '-weight' ); ?>" class="sbc-input" type="number" min="1" step="0.1" inputmode="decimal" placeholder="0" data-field="weight" />
-				</div>
-			</div>
-
-			<p class="sbc-error" role="alert" aria-live="polite" hidden></p>
-
-			<div class="sbc-result" aria-live="polite" hidden>
-				<p class="sbc-result__eyebrow"><?php echo esc_html__( 'Your Score', 'simple-bmi-calculator' ); ?></p>
-				<p class="sbc-result__number">0.0</p>
-				<p class="sbc-result__badge"><?php echo esc_html__( 'Healthy', 'simple-bmi-calculator' ); ?></p>
-				<div class="sbc-result__scale" aria-hidden="true">
-					<div class="sbc-result__scale-segment sbc-result__scale-segment--underweight"></div>
-					<div class="sbc-result__scale-segment sbc-result__scale-segment--healthy"></div>
-					<div class="sbc-result__scale-segment sbc-result__scale-segment--overweight"></div>
-					<div class="sbc-result__scale-segment sbc-result__scale-segment--obese"></div>
-				</div>
-			</div>
-
-			<?php if ( 'under_result' === $credit_placement ) : ?>
-				<?php echo $this->get_credit_markup( $options, $credit_rel, $credit_target, 'sbc-credit sbc-credit--under-result', true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-			<?php endif; ?>
-
-			<p class="sbc-disclaimer"><?php echo esc_html( $options['disclaimer_text'] ); ?></p>
-
-			<?php if ( 'under_calculator' === $credit_placement ) : ?>
-				<?php echo $this->get_credit_markup( $options, $credit_rel, $credit_target, 'sbc-credit sbc-credit--under-calculator', false ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-			<?php endif; ?>
-
-			<?php if ( 'footer' === $credit_placement ) : ?>
-				<div class="sbc-footer">
-					<?php echo $this->get_credit_markup( $options, $credit_rel, $credit_target, 'sbc-credit sbc-credit--footer', false ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-				</div>
-			<?php endif; ?>
+			<div class="sbc-card"><div class="sbc-header"><div class="sbc-title-group"><div class="sbc-icon-box" aria-hidden="true"><?php echo $this->get_calculator_icon_markup(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div><div class="sbc-title-text"><h3 class="sbc-title"><?php echo esc_html( $title_text ); ?></h3><p class="sbc-subtitle"><?php echo esc_html( $subtitle_text ); ?></p></div></div><div class="sbc-unit-toggle" role="group" aria-label="<?php echo esc_attr__( 'Measurement system', 'simple-bmi-calculator' ); ?>"><button type="button" class="<?php echo esc_attr( 'sbc-unit-toggle__button' . ( 'metric' === $unit ? ' sbc-unit-toggle__button--active' : '' ) ); ?>" data-unit="metric" aria-pressed="<?php echo esc_attr( 'metric' === $unit ? 'true' : 'false' ); ?>"><?php echo esc_html__( 'Metric', 'simple-bmi-calculator' ); ?></button><button type="button" class="<?php echo esc_attr( 'sbc-unit-toggle__button' . ( 'imperial' === $unit ? ' sbc-unit-toggle__button--active' : '' ) ); ?>" data-unit="imperial" aria-pressed="<?php echo esc_attr( 'imperial' === $unit ? 'true' : 'false' ); ?>"><?php echo esc_html__( 'Imperial', 'simple-bmi-calculator' ); ?></button></div></div><div class="sbc-fields sbc-fields--metric" data-unit-fields="metric"<?php echo $metric_hidden ? ' hidden' : ''; ?>><div class="sbc-input-grid"><div class="sbc-input-group"><label for="<?php echo esc_attr( $metric_height_id ); ?>" class="sbc-input-label"><?php echo esc_html__( 'Height', 'simple-bmi-calculator' ); ?></label><div class="sbc-field-container"><input id="<?php echo esc_attr( $metric_height_id ); ?>" class="sbc-input" type="number" min="1" step="0.1" inputmode="decimal" placeholder="0" data-field="height-cm" /><span class="sbc-unit-label" aria-hidden="true"><?php echo esc_html__( 'cm', 'simple-bmi-calculator' ); ?></span></div></div><div class="sbc-input-group"><label for="<?php echo esc_attr( $metric_weight_id ); ?>" class="sbc-input-label"><?php echo esc_html__( 'Weight', 'simple-bmi-calculator' ); ?></label><div class="sbc-field-container"><input id="<?php echo esc_attr( $metric_weight_id ); ?>" class="sbc-input" type="number" min="1" step="0.1" inputmode="decimal" placeholder="0" data-field="weight-kg" /><span class="sbc-unit-label" aria-hidden="true"><?php echo esc_html__( 'kg', 'simple-bmi-calculator' ); ?></span></div></div></div></div><div class="sbc-fields sbc-fields--imperial" data-unit-fields="imperial"<?php echo $imperial_hidden ? ' hidden' : ''; ?>><div class="sbc-input-grid sbc-input-grid--imperial"><div class="sbc-input-group"><label for="<?php echo esc_attr( $imperial_feet_id ); ?>" class="sbc-input-label"><?php echo esc_html__( 'Height', 'simple-bmi-calculator' ); ?></label><div class="sbc-field-container"><input id="<?php echo esc_attr( $imperial_feet_id ); ?>" class="sbc-input" type="number" min="0" step="1" inputmode="decimal" placeholder="0" data-field="height-ft" /><span class="sbc-unit-label" aria-hidden="true"><?php echo esc_html__( 'ft', 'simple-bmi-calculator' ); ?></span></div></div><div class="sbc-input-group"><label for="<?php echo esc_attr( $imperial_inches_id ); ?>" class="sbc-input-label"><?php echo esc_html__( 'Inches', 'simple-bmi-calculator' ); ?></label><div class="sbc-field-container"><input id="<?php echo esc_attr( $imperial_inches_id ); ?>" class="sbc-input" type="number" min="0" step="0.1" inputmode="decimal" placeholder="0" data-field="height-in" /><span class="sbc-unit-label" aria-hidden="true"><?php echo esc_html__( 'in', 'simple-bmi-calculator' ); ?></span></div></div><div class="sbc-input-group"><label for="<?php echo esc_attr( $imperial_weight_id ); ?>" class="sbc-input-label"><?php echo esc_html__( 'Weight', 'simple-bmi-calculator' ); ?></label><div class="sbc-field-container"><input id="<?php echo esc_attr( $imperial_weight_id ); ?>" class="sbc-input" type="number" min="1" step="0.1" inputmode="decimal" placeholder="0" data-field="weight-lb" /><span class="sbc-unit-label" aria-hidden="true"><?php echo esc_html__( 'lb', 'simple-bmi-calculator' ); ?></span></div></div></div></div><button type="button" class="sbc-calc-btn"><?php echo esc_html__( 'Calculate BMI', 'simple-bmi-calculator' ); ?></button><p class="sbc-error" role="alert" hidden></p><div class="sbc-result-box" aria-live="polite" hidden><div class="sbc-result-left"><p class="sbc-result-label"><?php echo esc_html__( 'BMI Score', 'simple-bmi-calculator' ); ?></p><p class="sbc-bmi-value">0.0</p></div><div class="sbc-result-right"><p class="sbc-category-badge"><?php echo esc_html__( 'Normal Weight', 'simple-bmi-calculator' ); ?></p><p class="sbc-range-text"><?php echo esc_html__( 'Reference range: 18.5 – 24.9', 'simple-bmi-calculator' ); ?></p><p class="sbc-feedback-text"><?php echo esc_html__( 'Your BMI is within the standard adult reference range.', 'simple-bmi-calculator' ); ?></p></div></div><?php if ( 'under_result' === $credit_placement ) : ?><?php echo $this->get_credit_markup( $options, $credit_rel, $credit_target, 'sbc-credit sbc-credit--under-result', true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php endif; ?><div class="sbc-footer-area"><div class="sbc-footer-note"><span class="sbc-footer-note__icon" aria-hidden="true"><?php echo $this->get_shield_icon_markup(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span><span><strong><?php echo esc_html__( 'Private.', 'simple-bmi-calculator' ); ?></strong> <?php echo esc_html__( 'No data is stored.', 'simple-bmi-calculator' ); ?></span></div><?php if ( ! empty( $options['disclaimer_text'] ) ) : ?><p class="sbc-disclaimer"><?php echo esc_html( $options['disclaimer_text'] ); ?></p><?php endif; ?><?php if ( 'footer' === $credit_placement ) : ?><?php echo $this->get_credit_markup( $options, $credit_rel, $credit_target, 'sbc-credit sbc-credit--footer', false ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php endif; ?></div></div><?php if ( 'under_calculator' === $credit_placement ) : ?><?php echo $this->get_credit_markup( $options, $credit_rel, $credit_target, 'sbc-credit sbc-credit--under-calculator', false ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php endif; ?>
 		</div>
 		<?php
 
@@ -347,6 +300,24 @@ class SBC_Shortcode {
 		<?php
 
 		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Get the calculator icon markup.
+	 *
+	 * @return string
+	 */
+	private function get_calculator_icon_markup() {
+		return '<svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><rect x="4" y="2.5" width="16" height="19" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="7" y="5.5" width="10" height="3.5" rx="1" fill="currentColor" opacity="0.92"/><path d="M8 12h2M14 12h2M8 15.5h2M14 15.5h2M8 19h2M11.5 15.5h1M11.5 19h1" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/></svg>';
+	}
+
+	/**
+	 * Get the privacy icon markup.
+	 *
+	 * @return string
+	 */
+	private function get_shield_icon_markup() {
+		return '<svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 3.5 5.5 6v5.7c0 4.3 2.6 8.2 6.5 9.8 3.9-1.6 6.5-5.5 6.5-9.8V6L12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m9.5 12 1.7 1.7 3.3-3.4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></svg>';
 	}
 
 	/**

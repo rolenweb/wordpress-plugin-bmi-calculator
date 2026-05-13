@@ -3,7 +3,7 @@
  * Plugin Name:       Simple BMI Calculator
  * Plugin URI:        https://bodymetriccalculator.com/bmi-calculator
  * Description:       Add a lightweight BMI calculator to any post or page with a shortcode.
- * Version:           1.1.0
+ * Version:           1.2.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Simple BMI Calculator
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SBC_VERSION', '1.1.0' );
+define( 'SBC_VERSION', '1.2.0' );
 define( 'SBC_PLUGIN_FILE', __FILE__ );
 define( 'SBC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'SBC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
