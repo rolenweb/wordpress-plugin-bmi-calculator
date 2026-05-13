@@ -78,9 +78,10 @@ Yes. You can enable FAQ schema and WebApplication schema in the settings page. S
 
 == Screenshots ==
 
-1. Default theme calculator displayed on the frontend with live BMI result output.
-2. Minimal theme calculator displayed on the frontend.
-3. Settings page with shortcode defaults and optional credit link controls.
+1. Default BMI calculator displayed on the frontend with metric mode selected.
+2. Imperial mode calculator with imperial inputs.
+3. Admin settings page with custom color controls.
+4. Admin settings page with optional credit link and schema markup settings.
 
 == Changelog ==
 
