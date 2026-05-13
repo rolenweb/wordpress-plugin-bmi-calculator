@@ -1,6 +1,6 @@
 === Simple BMI Calculator ===
 Contributors: rolenweb
-Tags: bmi calculator, health calculator, fitness calculator, body mass index, shortcode
+Tags: bmi calculator, bmi, calculator, health, shortcode
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
@@ -96,3 +96,8 @@ Yes. You can enable FAQ schema and WebApplication schema in the settings page. S
 = 1.0.0 =
 
 * Initial release.
+
+== Upgrade Notice ==
+
+= 1.0.0 =
+Initial release of Simple BMI Calculator.
