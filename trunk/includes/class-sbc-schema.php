@@ -136,7 +136,7 @@ class SBC_Schema {
 	 * @return array
 	 */
 	private function get_calculator_schema() {
-		$name = apply_filters( 'sbc_schema_name', __( 'Simple BMI Calculator', 'simple-bmi-calculator' ) );
+		$name = apply_filters( 'sbc_schema_name', __( 'BodyMetric BMI Calculator', 'simple-bmi-calculator' ) );
 		$description = apply_filters( 'sbc_schema_description', __( 'A free BMI calculator for WordPress websites.', 'simple-bmi-calculator' ) );
 
 		return array(

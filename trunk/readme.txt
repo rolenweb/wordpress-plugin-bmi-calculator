@@ -1,18 +1,18 @@
-=== Simple BMI Calculator ===
+=== BodyMetric BMI Calculator ===
 Contributors: rolenweb
 Tags: bmi calculator, bmi, calculator, health, shortcode
 Requires at least: 6.0
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Simple BMI Calculator adds a lightweight, accessible body mass index calculator to any post or page using a shortcode.
+BodyMetric BMI Calculator adds a lightweight, accessible body mass index calculator to any post or page using a shortcode.
 
 == Description ==
 
-Simple BMI Calculator is a free shortcode-based plugin for WordPress site owners who want a clean BMI calculator without external dependencies, tracking, or hidden backlinks.
+BodyMetric BMI Calculator is a free shortcode-based plugin for WordPress site owners who want a clean BMI calculator without external dependencies, tracking, or hidden backlinks.
 
 The frontend uses a modern card layout with a metric/imperial toggle, live result updates as visitors type, and a clear BMI status display with color-coded categories.
 
@@ -43,7 +43,7 @@ Use shortcode examples:
 
 1. Upload the `simple-bmi-calculator` folder to the `/wp-content/plugins/` directory, or upload the plugin zip from the WordPress admin area.
 2. Activate the plugin through the `Plugins` screen in WordPress.
-3. Go to `Settings -> Simple BMI Calculator` to adjust defaults.
+3. Go to `Settings -> BodyMetric BMI Calculator` to adjust defaults.
 4. Add the `[bmi_calculator]` shortcode to any post or page.
 
 == Frequently Asked Questions ==
@@ -100,4 +100,4 @@ Yes. You can enable FAQ schema and WebApplication schema in the settings page. S
 == Upgrade Notice ==
 
 = 1.0.0 =
-Initial release of Simple BMI Calculator.
+Initial release of BodyMetric BMI Calculator.

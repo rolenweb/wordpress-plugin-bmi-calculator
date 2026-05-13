@@ -1,16 +1,16 @@
 <?php
 /**
- * Plugin Name:       Simple BMI Calculator
+ * Plugin Name:       BodyMetric BMI Calculator
  * Plugin URI:        https://bodymetriccalculator.com/bmi-calculator
  * Description:       Add a lightweight BMI calculator to any post or page with a shortcode.
  * Version:           1.2.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
- * Author:            Simple BMI Calculator
+ * Author:            BodyMetricCalculator.com
  * Author URI:        https://bodymetriccalculator.com/
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       simple-bmi-calculator
+ * Text Domain:       body-metric-bmi-calculator
  * Domain Path:       /languages
  *
  * @package SimpleBmiCalculator

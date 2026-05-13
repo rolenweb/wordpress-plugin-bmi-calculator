@@ -114,8 +114,8 @@ class SBC_Settings {
 	 */
 	public function add_settings_page() {
 		add_options_page(
-			esc_html__( 'Simple BMI Calculator', 'simple-bmi-calculator' ),
-			esc_html__( 'Simple BMI Calculator', 'simple-bmi-calculator' ),
+			esc_html__( 'BodyMetric BMI Calculator', 'simple-bmi-calculator' ),
+			esc_html__( 'BodyMetric BMI Calculator', 'simple-bmi-calculator' ),
 			'manage_options',
 			'simple-bmi-calculator',
 			array( $this, 'render_settings_page' )
@@ -371,7 +371,7 @@ class SBC_Settings {
 		}
 		?>
 		<div class="wrap">
-			<h1><?php echo esc_html__( 'Simple BMI Calculator', 'simple-bmi-calculator' ); ?></h1>
+			<h1><?php echo esc_html__( 'BodyMetric BMI Calculator', 'simple-bmi-calculator' ); ?></h1>
 			<p><?php echo esc_html__( 'Configure calculator defaults, colors, visible credit behavior, and optional schema output. This plugin does not add hidden backlinks or tracking.', 'simple-bmi-calculator' ); ?></p>
 			<form action="options.php" method="post">
 				<?php
