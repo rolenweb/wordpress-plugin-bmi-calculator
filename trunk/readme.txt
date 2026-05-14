@@ -1,5 +1,5 @@
 === BodyMetric BMI Calculator ===
-Contributors: rolenweb
+Contributors: bodymetriccalculator
 Tags: bmi calculator, bmi, calculator, health, shortcode
 Requires at least: 6.0
 Tested up to: 6.9
@@ -41,7 +41,7 @@ Use shortcode examples:
 
 == Installation ==
 
-1. Upload the `simple-bmi-calculator` folder to the `/wp-content/plugins/` directory, or upload the plugin zip from the WordPress admin area.
+1. Upload the `body-metric-bmi-calculator` folder to the `/wp-content/plugins/` directory, or upload the plugin zip from the WordPress admin area.
 2. Activate the plugin through the `Plugins` screen in WordPress.
 3. Go to `Settings -> BodyMetric BMI Calculator` to adjust defaults.
 4. Add the `[bmi_calculator]` shortcode to any post or page.
