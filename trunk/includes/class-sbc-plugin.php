@@ -2,7 +2,7 @@
 /**
  * Main plugin class.
  *
- * @package SimpleBmiCalculator
+ * @package BodyMetricBmiCalculator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -86,7 +86,7 @@ class SBC_Plugin {
 	 */
 	private function load_textdomain() {
 		load_plugin_textdomain(
-			'simple-bmi-calculator',
+			'bodymetric-bmi-calculator',
 			false,
 			dirname( plugin_basename( SBC_PLUGIN_FILE ) ) . '/languages'
 		);

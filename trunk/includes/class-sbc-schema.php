@@ -2,7 +2,7 @@
 /**
  * Schema output handling.
  *
- * @package SimpleBmiCalculator
+ * @package BodyMetricBmiCalculator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -136,8 +136,8 @@ class SBC_Schema {
 	 * @return array
 	 */
 	private function get_calculator_schema() {
-		$name = apply_filters( 'sbc_schema_name', __( 'BodyMetric BMI Calculator', 'simple-bmi-calculator' ) );
-		$description = apply_filters( 'sbc_schema_description', __( 'A free BMI calculator for WordPress websites.', 'simple-bmi-calculator' ) );
+		$name = apply_filters( 'sbc_schema_name', __( 'BodyMetric BMI Calculator', 'bodymetric-bmi-calculator' ) );
+		$description = apply_filters( 'sbc_schema_description', __( 'A free BMI calculator for WordPress websites.', 'bodymetric-bmi-calculator' ) );
 
 		return array(
 			'@context'            => 'https://schema.org',

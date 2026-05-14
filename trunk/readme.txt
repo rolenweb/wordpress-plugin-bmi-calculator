@@ -41,7 +41,7 @@ Use shortcode examples:
 
 == Installation ==
 
-1. Upload the `body-metric-bmi-calculator` folder to the `/wp-content/plugins/` directory, or upload the plugin zip from the WordPress admin area.
+1. Upload the `bodymetric-bmi-calculator` folder to the `/wp-content/plugins/` directory, or upload the plugin zip from the WordPress admin area.
 2. Activate the plugin through the `Plugins` screen in WordPress.
 3. Go to `Settings -> BodyMetric BMI Calculator` to adjust defaults.
 4. Add the `[bmi_calculator]` shortcode to any post or page.

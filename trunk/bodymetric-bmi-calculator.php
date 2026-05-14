@@ -10,10 +10,10 @@
  * Author URI:        https://bodymetriccalculator.com/
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       body-metric-bmi-calculator
+ * Text Domain:       bodymetric-bmi-calculator
  * Domain Path:       /languages
  *
- * @package SimpleBmiCalculator
+ * @package BodyMetricBmiCalculator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

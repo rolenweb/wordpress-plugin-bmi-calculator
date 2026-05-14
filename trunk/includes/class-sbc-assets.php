@@ -2,7 +2,7 @@
 /**
  * Asset handling.
  *
- * @package SimpleBmiCalculator
+ * @package BodyMetricBmiCalculator
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -19,14 +19,14 @@ class SBC_Assets {
 	 *
 	 * @var string
 	 */
-	const SCRIPT_HANDLE = 'simple-bmi-calculator';
+	const SCRIPT_HANDLE = 'bodymetric-bmi-calculator';
 
 	/**
 	 * Style handle.
 	 *
 	 * @var string
 	 */
-	const STYLE_HANDLE = 'simple-bmi-calculator';
+	const STYLE_HANDLE = 'bodymetric-bmi-calculator';
 
 	/**
 	 * Prevent duplicate localization.
@@ -52,14 +52,14 @@ class SBC_Assets {
 	public function register_assets() {
 		wp_register_style(
 			self::STYLE_HANDLE,
-			SBC_PLUGIN_URL . 'assets/css/simple-bmi-calculator.css',
+			SBC_PLUGIN_URL . 'assets/css/bodymetric-bmi-calculator.css',
 			array(),
 			SBC_VERSION
 		);
 
 		wp_register_script(
 			self::SCRIPT_HANDLE,
-			SBC_PLUGIN_URL . 'assets/js/simple-bmi-calculator.js',
+			SBC_PLUGIN_URL . 'assets/js/bodymetric-bmi-calculator.js',
 			array(),
 			SBC_VERSION,
 			true
@@ -89,14 +89,14 @@ class SBC_Assets {
 			'sbcCalculatorData',
 			array(
 				'i18n' => array(
-					'errorMetric'  => esc_html__( 'Enter valid height in centimeters and weight in kilograms.', 'simple-bmi-calculator' ),
-					'errorImperial' => esc_html__( 'Enter valid height in feet and inches, and weight in pounds.', 'simple-bmi-calculator' ),
-					'underweight'  => esc_html__( 'Underweight', 'simple-bmi-calculator' ),
-					'normalWeight' => esc_html__( 'Normal Weight', 'simple-bmi-calculator' ),
-					'overweight'   => esc_html__( 'Overweight', 'simple-bmi-calculator' ),
-					'obesity'      => esc_html__( 'Obesity', 'simple-bmi-calculator' ),
-					'bmiScore'     => esc_html__( 'BMI Score', 'simple-bmi-calculator' ),
-					'rangePrefix'  => esc_html__( 'Reference range:', 'simple-bmi-calculator' ),
+					'errorMetric'  => esc_html__( 'Enter valid height in centimeters and weight in kilograms.', 'bodymetric-bmi-calculator' ),
+					'errorImperial' => esc_html__( 'Enter valid height in feet and inches, and weight in pounds.', 'bodymetric-bmi-calculator' ),
+					'underweight'  => esc_html__( 'Underweight', 'bodymetric-bmi-calculator' ),
+					'normalWeight' => esc_html__( 'Normal Weight', 'bodymetric-bmi-calculator' ),
+					'overweight'   => esc_html__( 'Overweight', 'bodymetric-bmi-calculator' ),
+					'obesity'      => esc_html__( 'Obesity', 'bodymetric-bmi-calculator' ),
+					'bmiScore'     => esc_html__( 'BMI Score', 'bodymetric-bmi-calculator' ),
+					'rangePrefix'  => esc_html__( 'Reference range:', 'bodymetric-bmi-calculator' ),
 				),
 			)
 		);
