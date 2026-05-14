@@ -55,8 +55,6 @@ class BODYBMCA_Shortcode {
 	 */
 	public function init() {
 		add_shortcode( 'bodybmca_bmi_calculator', array( $this, 'render_shortcode' ) );
-		// Keep the legacy unprefixed shortcode for backward compatibility and user convenience.
-		add_shortcode( 'bmi_calculator', array( $this, 'render_shortcode' ) );
 	}
 
 	/**

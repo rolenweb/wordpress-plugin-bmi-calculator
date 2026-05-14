@@ -30,7 +30,6 @@ Features include:
 Use shortcode examples:
 
 * `[bodybmca_bmi_calculator]`
-* `[bmi_calculator]` (legacy alias)
 * `[bodybmca_bmi_calculator unit="metric"]`
 * `[bodybmca_bmi_calculator unit="imperial"]`
 * `[bodybmca_bmi_calculator theme="modern"]`
@@ -45,7 +44,7 @@ Use shortcode examples:
 1. Upload the `bodymetric-bmi-calculator` folder to the `/wp-content/plugins/` directory, or upload the plugin zip from the WordPress admin area.
 2. Activate the plugin through the `Plugins` screen in WordPress.
 3. Go to `Settings -> BodyMetric BMI Calculator` to adjust defaults.
-4. Add the `[bodybmca_bmi_calculator]` shortcode to any post or page. The legacy alias `[bmi_calculator]` is also supported.
+4. Add the `[bodybmca_bmi_calculator]` shortcode to any post or page.
 
 == Frequently Asked Questions ==
 
@@ -60,10 +59,6 @@ No. The credit link is disabled by default and only appears as a visible link if
 = Can I use imperial or metric units? =
 
 Yes. You can set a default in settings and visitors can switch units directly in the calculator interface.
-
-= Which shortcode should I use? =
-
-Use `[bodybmca_bmi_calculator]` for the prefixed shortcode. The simpler `[bmi_calculator]` shortcode is also supported as a backward-compatible alias.
 
 = What inputs does the calculator use? =
 

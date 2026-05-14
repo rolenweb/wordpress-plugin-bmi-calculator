@@ -71,7 +71,6 @@ Use the primary shortcode anywhere shortcodes are supported:
 
 ```shortcode
 [bodybmca_bmi_calculator]
-[bmi_calculator]
 [bodybmca_bmi_calculator unit="metric"]
 [bodybmca_bmi_calculator unit="imperial"]
 [bodybmca_bmi_calculator theme="minimal"]
@@ -86,14 +85,6 @@ Use the primary shortcode anywhere shortcodes are supported:
 ```shortcode
 [bodybmca_bmi_calculator]
 ```
-
-### Legacy Alias
-
-```shortcode
-[bmi_calculator]
-```
-
-`[bmi_calculator]` remains available as a simple backward-compatible alias.
 
 ### Supported Options
 
