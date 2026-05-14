@@ -12,12 +12,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Render structured data when the shortcode is present.
  */
-class SBC_Schema {
+class BODYBMCA_Schema {
 
 	/**
 	 * Settings handler.
 	 *
-	 * @var SBC_Settings
+	 * @var BODYBMCA_Settings
 	 */
 	private $settings;
 
@@ -45,9 +45,9 @@ class SBC_Schema {
 	/**
 	 * Constructor.
 	 *
-	 * @param SBC_Settings $settings Settings handler.
+	 * @param BODYBMCA_Settings $settings Settings handler.
 	 */
-	public function __construct( SBC_Settings $settings ) {
+	public function __construct( BODYBMCA_Settings $settings ) {
 		$this->settings = $settings;
 	}
 
@@ -136,8 +136,8 @@ class SBC_Schema {
 	 * @return array
 	 */
 	private function get_calculator_schema() {
-		$name = apply_filters( 'sbc_schema_name', __( 'BodyMetric BMI Calculator', 'bodymetric-bmi-calculator' ) );
-		$description = apply_filters( 'sbc_schema_description', __( 'A free BMI calculator for WordPress websites.', 'bodymetric-bmi-calculator' ) );
+		$name = apply_filters( 'bodybmca_schema_name', __( 'BodyMetric BMI Calculator', 'bodymetric-bmi-calculator' ) );
+		$description = apply_filters( 'bodybmca_schema_description', __( 'A free BMI calculator for WordPress websites.', 'bodymetric-bmi-calculator' ) );
 
 		return array(
 			'@context'            => 'https://schema.org',

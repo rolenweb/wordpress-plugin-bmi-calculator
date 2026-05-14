@@ -12,37 +12,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Handle BMI calculator shortcode output.
  */
-class SBC_Shortcode {
+class BODYBMCA_Shortcode {
 
 	/**
 	 * Assets handler.
 	 *
-	 * @var SBC_Assets
+	 * @var BODYBMCA_Assets
 	 */
 	private $assets;
 
 	/**
 	 * Settings handler.
 	 *
-	 * @var SBC_Settings
+	 * @var BODYBMCA_Settings
 	 */
 	private $settings;
 
 	/**
 	 * Schema handler.
 	 *
-	 * @var SBC_Schema
+	 * @var BODYBMCA_Schema
 	 */
 	private $schema;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param SBC_Assets   $assets Assets handler.
-	 * @param SBC_Settings $settings Settings handler.
-	 * @param SBC_Schema   $schema Schema handler.
+	 * @param BODYBMCA_Assets   $assets Assets handler.
+	 * @param BODYBMCA_Settings $settings Settings handler.
+	 * @param BODYBMCA_Schema   $schema Schema handler.
 	 */
-	public function __construct( SBC_Assets $assets, SBC_Settings $settings, SBC_Schema $schema ) {
+	public function __construct( BODYBMCA_Assets $assets, BODYBMCA_Settings $settings, BODYBMCA_Schema $schema ) {
 		$this->assets   = $assets;
 		$this->settings = $settings;
 		$this->schema   = $schema;
@@ -54,6 +54,8 @@ class SBC_Shortcode {
 	 * @return void
 	 */
 	public function init() {
+		add_shortcode( 'bodybmca_bmi_calculator', array( $this, 'render_shortcode' ) );
+		// Keep the legacy unprefixed shortcode for backward compatibility and user convenience.
 		add_shortcode( 'bmi_calculator', array( $this, 'render_shortcode' ) );
 	}
 
@@ -81,7 +83,7 @@ class SBC_Shortcode {
 				'show_schema'   => '',
 			),
 			$atts,
-			'bmi_calculator'
+			'bodybmca_bmi_calculator'
 		);
 
 		$raw_unit           = sanitize_key( wp_unslash( $atts['unit'] ) );
@@ -91,7 +93,7 @@ class SBC_Shortcode {
 		$title              = sanitize_text_field( wp_unslash( $atts['title'] ) );
 		$title_text         = '' !== $title ? $title : esc_html__( 'BMI Calculator', 'bodymetric-bmi-calculator' );
 		$subtitle_text      = esc_html__( 'Calculate your Body Mass Index', 'bodymetric-bmi-calculator' );
-		$instance_id        = wp_unique_id( 'sbc-calculator-' );
+		$instance_id        = wp_unique_id( 'bodybmca-calculator-' );
 		$metric_hidden      = 'metric' !== $unit;
 		$imperial_hidden    = 'imperial' !== $unit;
 		$metric_height_id   = $instance_id . '-height-cm';
@@ -220,7 +222,7 @@ class SBC_Shortcode {
 	private function get_color_config( $options, $atts ) {
 		$colors = array();
 
-		foreach ( SBC_Settings::get_color_defaults() as $option_key => $default_color ) {
+		foreach ( BODYBMCA_Settings::get_color_defaults() as $option_key => $default_color ) {
 			$colors[ $option_key ] = isset( $options[ $option_key ] ) && sanitize_hex_color( $options[ $option_key ] )
 				? $options[ $option_key ]
 				: $default_color;

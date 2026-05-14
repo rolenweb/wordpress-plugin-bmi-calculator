@@ -1,7 +1,7 @@
 ( function () {
 	'use strict';
 
-	var config = window.sbcCalculatorData || {};
+	var config = window.bodybmcaData || {};
 	var i18n = config.i18n || {};
 
 	function parseNumber( value ) {

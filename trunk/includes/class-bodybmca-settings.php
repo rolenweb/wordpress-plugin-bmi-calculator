@@ -12,21 +12,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Settings API integration.
  */
-class SBC_Settings {
+class BODYBMCA_Settings {
 
 	/**
 	 * Option name.
 	 *
 	 * @var string
 	 */
-	const OPTION_NAME = 'bodymetric_bmi_calculator_options';
+	const OPTION_NAME = 'bodybmca_options';
 
 	/**
 	 * Legacy option name used before the plugin rename.
 	 *
 	 * @var string
 	 */
-	const LEGACY_OPTION_NAME = 'simple_bmi_calculator_options';
+	const LEGACY_OPTION_NAMES = array(
+		'bodymetric_bmi_calculator_options',
+		'simple_bmi_calculator_options',
+	);
 
 	/**
 	 * Credit link placement options.
@@ -95,6 +98,7 @@ class SBC_Settings {
 	 * @return void
 	 */
 	public function init() {
+		$this->maybe_migrate_legacy_options();
 		add_action( 'admin_menu', array( $this, 'add_settings_page' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 	}
@@ -108,10 +112,13 @@ class SBC_Settings {
 		$options = get_option( self::OPTION_NAME, array() );
 
 		if ( empty( $options ) ) {
-			$legacy_options = get_option( self::LEGACY_OPTION_NAME, array() );
+			foreach ( self::LEGACY_OPTION_NAMES as $legacy_option_name ) {
+				$legacy_options = get_option( $legacy_option_name, array() );
 
-			if ( is_array( $legacy_options ) && ! empty( $legacy_options ) ) {
-				$options = $legacy_options;
+				if ( is_array( $legacy_options ) && ! empty( $legacy_options ) ) {
+					$options = $legacy_options;
+					break;
+				}
 			}
 		}
 
@@ -144,44 +151,44 @@ class SBC_Settings {
 	 */
 	public function register_settings() {
 		register_setting(
-			'sbc_settings_group',
+			'bodybmca_settings',
 			self::OPTION_NAME,
 			array( $this, 'sanitize_settings' )
 		);
 
 		add_settings_section(
-			'sbc_general_section',
+			'bodybmca_general_section',
 			esc_html__( 'General', 'bodymetric-bmi-calculator' ),
 			array( $this, 'render_general_section_description' ),
 			'bodymetric-bmi-calculator'
 		);
 
 		add_settings_field(
-			'default_unit',
+			'bodybmca_default_unit',
 			esc_html__( 'Default unit', 'bodymetric-bmi-calculator' ),
 			array( $this, 'render_default_unit_field' ),
 			'bodymetric-bmi-calculator',
-			'sbc_general_section'
+			'bodybmca_general_section'
 		);
 
 		add_settings_field(
-			'default_theme',
+			'bodybmca_default_theme',
 			esc_html__( 'Default theme', 'bodymetric-bmi-calculator' ),
 			array( $this, 'render_default_theme_field' ),
 			'bodymetric-bmi-calculator',
-			'sbc_general_section'
+			'bodybmca_general_section'
 		);
 
 		add_settings_field(
-			'disclaimer_text',
+			'bodybmca_disclaimer_text',
 			esc_html__( 'Custom disclaimer text', 'bodymetric-bmi-calculator' ),
 			array( $this, 'render_disclaimer_text_field' ),
 			'bodymetric-bmi-calculator',
-			'sbc_general_section'
+			'bodybmca_general_section'
 		);
 
 		add_settings_section(
-			'sbc_colors_section',
+			'bodybmca_colors_section',
 			esc_html__( 'Colors', 'bodymetric-bmi-calculator' ),
 			array( $this, 'render_colors_section_description' ),
 			'bodymetric-bmi-calculator'
@@ -189,11 +196,11 @@ class SBC_Settings {
 
 		foreach ( $this->get_color_field_map() as $field_key => $field_label ) {
 			add_settings_field(
-				$field_key,
+				'bodybmca_' . $field_key,
 				$field_label,
 				array( $this, 'render_color_field' ),
 				'bodymetric-bmi-calculator',
-				'sbc_colors_section',
+				'bodybmca_colors_section',
 				array(
 					'field_key' => $field_key,
 				)
@@ -201,86 +208,86 @@ class SBC_Settings {
 		}
 
 		add_settings_section(
-			'sbc_credit_section',
+			'bodybmca_credit_section',
 			esc_html__( 'Credit Link', 'bodymetric-bmi-calculator' ),
 			array( $this, 'render_credit_section_description' ),
 			'bodymetric-bmi-calculator'
 		);
 
 		add_settings_field(
-			'show_credit_link',
+			'bodybmca_show_credit_link',
 			esc_html__( 'Show credit link', 'bodymetric-bmi-calculator' ),
 			array( $this, 'render_show_credit_link_field' ),
 			'bodymetric-bmi-calculator',
-			'sbc_credit_section'
+			'bodybmca_credit_section'
 		);
 
 		add_settings_field(
-			'credit_link_text',
+			'bodybmca_credit_link_text',
 			esc_html__( 'Credit link text', 'bodymetric-bmi-calculator' ),
 			array( $this, 'render_credit_link_text_field' ),
 			'bodymetric-bmi-calculator',
-			'sbc_credit_section'
+			'bodybmca_credit_section'
 		);
 
 		add_settings_field(
-			'credit_link_url',
+			'bodybmca_credit_link_url',
 			esc_html__( 'Credit link URL', 'bodymetric-bmi-calculator' ),
 			array( $this, 'render_credit_link_url_field' ),
 			'bodymetric-bmi-calculator',
-			'sbc_credit_section'
+			'bodybmca_credit_section'
 		);
 
 		add_settings_field(
-			'credit_link_placement',
+			'bodybmca_credit_link_placement',
 			esc_html__( 'Credit link placement', 'bodymetric-bmi-calculator' ),
 			array( $this, 'render_credit_link_placement_field' ),
 			'bodymetric-bmi-calculator',
-			'sbc_credit_section'
+			'bodybmca_credit_section'
 		);
 
 		add_settings_field(
-			'open_credit_new_tab',
+			'bodybmca_open_credit_new_tab',
 			esc_html__( 'Open credit link in new tab', 'bodymetric-bmi-calculator' ),
 			array( $this, 'render_open_credit_new_tab_field' ),
 			'bodymetric-bmi-calculator',
-			'sbc_credit_section'
+			'bodybmca_credit_section'
 		);
 
 		add_settings_field(
-			'credit_link_rel',
+			'bodybmca_credit_link_rel',
 			esc_html__( 'Credit link rel attribute', 'bodymetric-bmi-calculator' ),
 			array( $this, 'render_credit_link_rel_field' ),
 			'bodymetric-bmi-calculator',
-			'sbc_credit_section'
+			'bodybmca_credit_section'
 		);
 
 		add_settings_section(
-			'sbc_schema_section',
+			'bodybmca_schema_section',
 			esc_html__( 'Schema Markup', 'bodymetric-bmi-calculator' ),
 			array( $this, 'render_schema_section_description' ),
 			'bodymetric-bmi-calculator'
 		);
 
 		add_settings_field(
-			'enable_faq_schema',
+			'bodybmca_enable_faq_schema',
 			esc_html__( 'Enable FAQ schema', 'bodymetric-bmi-calculator' ),
 			array( $this, 'render_enable_faq_schema_field' ),
 			'bodymetric-bmi-calculator',
-			'sbc_schema_section'
+			'bodybmca_schema_section'
 		);
 
 		add_settings_field(
-			'enable_calculator_schema',
+			'bodybmca_enable_calculator_schema',
 			esc_html__( 'Enable calculator schema', 'bodymetric-bmi-calculator' ),
 			array( $this, 'render_enable_calculator_schema_field' ),
 			'bodymetric-bmi-calculator',
-			'sbc_schema_section'
+			'bodybmca_schema_section'
 		);
 
 		for ( $index = 1; $index <= 3; $index++ ) {
 			add_settings_field(
-				'faq_question_' . $index,
+				'bodybmca_faq_question_' . $index,
 				sprintf(
 					/* translators: %d: FAQ item number. */
 					esc_html__( 'FAQ question %d', 'bodymetric-bmi-calculator' ),
@@ -288,14 +295,14 @@ class SBC_Settings {
 				),
 				array( $this, 'render_faq_question_field' ),
 				'bodymetric-bmi-calculator',
-				'sbc_schema_section',
+				'bodybmca_schema_section',
 				array(
 					'index' => $index,
 				)
 			);
 
 			add_settings_field(
-				'faq_answer_' . $index,
+				'bodybmca_faq_answer_' . $index,
 				sprintf(
 					/* translators: %d: FAQ item number. */
 					esc_html__( 'FAQ answer %d', 'bodymetric-bmi-calculator' ),
@@ -303,7 +310,7 @@ class SBC_Settings {
 				),
 				array( $this, 'render_faq_answer_field' ),
 				'bodymetric-bmi-calculator',
-				'sbc_schema_section',
+				'bodybmca_schema_section',
 				array(
 					'index' => $index,
 				)
@@ -390,7 +397,7 @@ class SBC_Settings {
 			<p><?php echo esc_html__( 'Configure calculator defaults, colors, visible credit behavior, and optional schema output. This plugin does not add hidden backlinks or tracking.', 'bodymetric-bmi-calculator' ); ?></p>
 			<form action="options.php" method="post">
 				<?php
-				settings_fields( 'sbc_settings_group' );
+				settings_fields( 'bodybmca_settings' );
 				do_settings_sections( 'bodymetric-bmi-calculator' );
 				submit_button();
 				?>
@@ -493,7 +500,7 @@ class SBC_Settings {
 		$value     = isset( $options[ $field_key ] ) ? $options[ $field_key ] : '';
 		?>
 		<input
-			class="regular-text sbc-color-field"
+			class="regular-text bodybmca-color-field"
 			name="<?php echo esc_attr( self::OPTION_NAME ); ?>[<?php echo esc_attr( $field_key ); ?>]"
 			type="text"
 			pattern="^#[A-Fa-f0-9]{6}$"
@@ -510,9 +517,9 @@ class SBC_Settings {
 	public function render_show_credit_link_field() {
 		$options = $this->get_options();
 		?>
-		<label for="sbc-show-credit-link">
+		<label for="bodybmca-show-credit-link">
 			<input
-				id="sbc-show-credit-link"
+				id="bodybmca-show-credit-link"
 				name="<?php echo esc_attr( self::OPTION_NAME ); ?>[show_credit_link]"
 				type="checkbox"
 				value="1"
@@ -582,9 +589,9 @@ class SBC_Settings {
 	public function render_open_credit_new_tab_field() {
 		$options = $this->get_options();
 		?>
-		<label for="sbc-open-credit-new-tab">
+		<label for="bodybmca-open-credit-new-tab">
 			<input
-				id="sbc-open-credit-new-tab"
+				id="bodybmca-open-credit-new-tab"
 				name="<?php echo esc_attr( self::OPTION_NAME ); ?>[open_credit_new_tab]"
 				type="checkbox"
 				value="1"
@@ -613,9 +620,9 @@ class SBC_Settings {
 	public function render_enable_faq_schema_field() {
 		$options = $this->get_options();
 		?>
-		<label for="sbc-enable-faq-schema">
+		<label for="bodybmca-enable-faq-schema">
 			<input
-				id="sbc-enable-faq-schema"
+				id="bodybmca-enable-faq-schema"
 				name="<?php echo esc_attr( self::OPTION_NAME ); ?>[enable_faq_schema]"
 				type="checkbox"
 				value="1"
@@ -634,9 +641,9 @@ class SBC_Settings {
 	public function render_enable_calculator_schema_field() {
 		$options = $this->get_options();
 		?>
-		<label for="sbc-enable-calculator-schema">
+		<label for="bodybmca-enable-calculator-schema">
 			<input
-				id="sbc-enable-calculator-schema"
+				id="bodybmca-enable-calculator-schema"
 				name="<?php echo esc_attr( self::OPTION_NAME ); ?>[enable_calculator_schema]"
 				type="checkbox"
 				value="1"
@@ -704,5 +711,27 @@ class SBC_Settings {
 			'warning_color'       => esc_html__( 'Warning/category color', 'bodymetric-bmi-calculator' ),
 			'danger_color'        => esc_html__( 'Danger/category color', 'bodymetric-bmi-calculator' ),
 		);
+	}
+
+	/**
+	 * Migrate legacy saved options to the unique prefixed option name.
+	 *
+	 * @return void
+	 */
+	private function maybe_migrate_legacy_options() {
+		$new_options = get_option( self::OPTION_NAME, false );
+
+		if ( false !== $new_options ) {
+			return;
+		}
+
+		foreach ( self::LEGACY_OPTION_NAMES as $legacy_option_name ) {
+			$legacy_options = get_option( $legacy_option_name, false );
+
+			if ( false !== $legacy_options ) {
+				update_option( self::OPTION_NAME, $legacy_options );
+				return;
+			}
+		}
 	}
 }

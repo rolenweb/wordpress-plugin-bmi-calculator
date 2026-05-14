@@ -20,33 +20,34 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SBC_VERSION', '1.2.0' );
-define( 'SBC_PLUGIN_FILE', __FILE__ );
-define( 'SBC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'SBC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'BODYBMCA_VERSION', '1.2.0' );
+define( 'BODYBMCA_PLUGIN_FILE', __FILE__ );
+define( 'BODYBMCA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'BODYBMCA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'BODYBMCA_TEXT_DOMAIN', 'bodymetric-bmi-calculator' );
 
-require_once SBC_PLUGIN_DIR . 'includes/class-sbc-assets.php';
-require_once SBC_PLUGIN_DIR . 'includes/class-sbc-settings.php';
-require_once SBC_PLUGIN_DIR . 'includes/class-sbc-schema.php';
-require_once SBC_PLUGIN_DIR . 'includes/class-sbc-shortcode.php';
-require_once SBC_PLUGIN_DIR . 'includes/class-sbc-plugin.php';
+require_once BODYBMCA_PLUGIN_DIR . 'includes/class-bodybmca-assets.php';
+require_once BODYBMCA_PLUGIN_DIR . 'includes/class-bodybmca-settings.php';
+require_once BODYBMCA_PLUGIN_DIR . 'includes/class-bodybmca-schema.php';
+require_once BODYBMCA_PLUGIN_DIR . 'includes/class-bodybmca-shortcode.php';
+require_once BODYBMCA_PLUGIN_DIR . 'includes/class-bodybmca-plugin.php';
 
 /**
  * Placeholder premium check for future expansion.
  *
  * @return bool
  */
-function sbc_is_premium() {
-	return (bool) apply_filters( 'sbc_is_premium', false );
+function bodybmca_is_premium() {
+	return (bool) apply_filters( 'bodybmca_is_premium', false );
 }
 
 /**
  * Bootstrap the plugin.
  *
- * @return SBC_Plugin
+ * @return BODYBMCA_Plugin
  */
-function sbc_init_plugin() {
-	return SBC_Plugin::get_instance();
+function bodybmca_init_plugin() {
+	return BODYBMCA_Plugin::get_instance();
 }
 
-add_action( 'plugins_loaded', 'sbc_init_plugin' );
+add_action( 'plugins_loaded', 'bodybmca_init_plugin' );

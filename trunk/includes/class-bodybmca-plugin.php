@@ -12,47 +12,47 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Main plugin bootstrap.
  */
-class SBC_Plugin {
+class BODYBMCA_Plugin {
 
 	/**
 	 * Plugin instance.
 	 *
-	 * @var SBC_Plugin|null
+	 * @var BODYBMCA_Plugin|null
 	 */
 	private static $instance = null;
 
 	/**
 	 * Assets handler.
 	 *
-	 * @var SBC_Assets
+	 * @var BODYBMCA_Assets
 	 */
 	private $assets;
 
 	/**
 	 * Settings handler.
 	 *
-	 * @var SBC_Settings
+	 * @var BODYBMCA_Settings
 	 */
 	private $settings;
 
 	/**
 	 * Schema handler.
 	 *
-	 * @var SBC_Schema
+	 * @var BODYBMCA_Schema
 	 */
 	private $schema;
 
 	/**
 	 * Shortcode handler.
 	 *
-	 * @var SBC_Shortcode
+	 * @var BODYBMCA_Shortcode
 	 */
 	private $shortcode;
 
 	/**
 	 * Get singleton instance.
 	 *
-	 * @return SBC_Plugin
+	 * @return BODYBMCA_Plugin
 	 */
 	public static function get_instance() {
 		if ( null === self::$instance ) {
@@ -68,10 +68,10 @@ class SBC_Plugin {
 	private function __construct() {
 		$this->load_textdomain();
 
-		$this->assets    = new SBC_Assets();
-		$this->settings  = new SBC_Settings();
-		$this->schema    = new SBC_Schema( $this->settings );
-		$this->shortcode = new SBC_Shortcode( $this->assets, $this->settings, $this->schema );
+		$this->assets    = new BODYBMCA_Assets();
+		$this->settings  = new BODYBMCA_Settings();
+		$this->schema    = new BODYBMCA_Schema( $this->settings );
+		$this->shortcode = new BODYBMCA_Shortcode( $this->assets, $this->settings, $this->schema );
 
 		$this->settings->init();
 		$this->assets->init();
@@ -86,9 +86,9 @@ class SBC_Plugin {
 	 */
 	private function load_textdomain() {
 		load_plugin_textdomain(
-			'bodymetric-bmi-calculator',
+			BODYBMCA_TEXT_DOMAIN,
 			false,
-			dirname( plugin_basename( SBC_PLUGIN_FILE ) ) . '/languages'
+			dirname( plugin_basename( BODYBMCA_PLUGIN_FILE ) ) . '/languages'
 		);
 	}
 }

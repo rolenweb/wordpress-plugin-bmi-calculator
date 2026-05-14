@@ -12,21 +12,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Register and enqueue frontend assets.
  */
-class SBC_Assets {
+class BODYBMCA_Assets {
 
 	/**
 	 * Script handle.
 	 *
 	 * @var string
 	 */
-	const SCRIPT_HANDLE = 'bodymetric-bmi-calculator';
+	const SCRIPT_HANDLE = 'bodybmca-frontend-script';
 
 	/**
 	 * Style handle.
 	 *
 	 * @var string
 	 */
-	const STYLE_HANDLE = 'bodymetric-bmi-calculator';
+	const STYLE_HANDLE = 'bodybmca-frontend-style';
 
 	/**
 	 * Prevent duplicate localization.
@@ -52,16 +52,16 @@ class SBC_Assets {
 	public function register_assets() {
 		wp_register_style(
 			self::STYLE_HANDLE,
-			SBC_PLUGIN_URL . 'assets/css/bodymetric-bmi-calculator.css',
+			BODYBMCA_PLUGIN_URL . 'assets/css/bodymetric-bmi-calculator.css',
 			array(),
-			SBC_VERSION
+			BODYBMCA_VERSION
 		);
 
 		wp_register_script(
 			self::SCRIPT_HANDLE,
-			SBC_PLUGIN_URL . 'assets/js/bodymetric-bmi-calculator.js',
+			BODYBMCA_PLUGIN_URL . 'assets/js/bodymetric-bmi-calculator.js',
 			array(),
-			SBC_VERSION,
+			BODYBMCA_VERSION,
 			true
 		);
 	}
@@ -86,7 +86,7 @@ class SBC_Assets {
 
 		wp_localize_script(
 			self::SCRIPT_HANDLE,
-			'sbcCalculatorData',
+			'bodybmcaData',
 			array(
 				'i18n' => array(
 					'errorMetric'  => esc_html__( 'Enter valid height in centimeters and weight in kilograms.', 'bodymetric-bmi-calculator' ),

@@ -55,7 +55,7 @@ Landing page: [bodymetriccalculator.com/bmi-calculator](https://bodymetriccalcul
 1. Download or clone this repository.
 2. Copy the `bodymetric-bmi-calculator` folder to `wp-content/plugins/`.
 3. Activate the plugin from `WordPress Admin -> Plugins`.
-4. Add `[bmi_calculator]` to any post or page.
+4. Add `[bodybmca_bmi_calculator]` to any post or page.
 
 ### ZIP Upload
 
@@ -67,24 +67,33 @@ Landing page: [bodymetriccalculator.com/bmi-calculator](https://bodymetriccalcul
 
 ## Usage
 
-Use the main shortcode anywhere shortcodes are supported:
+Use the primary shortcode anywhere shortcodes are supported:
 
 ```shortcode
+[bodybmca_bmi_calculator]
 [bmi_calculator]
-[bmi_calculator unit="metric"]
-[bmi_calculator unit="imperial"]
-[bmi_calculator theme="minimal"]
-[bmi_calculator title="Check Your BMI"]
-[bmi_calculator primary_color="#2563eb"]
-[bmi_calculator show_credit="false"]
-[bmi_calculator show_schema="true"]
+[bodybmca_bmi_calculator unit="metric"]
+[bodybmca_bmi_calculator unit="imperial"]
+[bodybmca_bmi_calculator theme="minimal"]
+[bodybmca_bmi_calculator title="Check Your BMI"]
+[bodybmca_bmi_calculator primary_color="#2563eb"]
+[bodybmca_bmi_calculator show_credit="false"]
+[bodybmca_bmi_calculator show_schema="true"]
 ```
 
 ### Main Shortcode
 
 ```shortcode
+[bodybmca_bmi_calculator]
+```
+
+### Legacy Alias
+
+```shortcode
 [bmi_calculator]
 ```
+
+`[bmi_calculator]` remains available as a simple backward-compatible alias.
 
 ### Supported Options
 
